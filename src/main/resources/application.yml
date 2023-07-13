@@ -1,0 +1,10 @@
+# general
+spring:
+  application:
+    name: accommodation
+server:
+  port: 8070
+# logging
+# OFF << FATAL << ERROR << WARN << INFO << DEBUG << TRACE << ALL
+logging:
+  level.com.example.demo: DEBUG
