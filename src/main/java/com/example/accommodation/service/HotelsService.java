@@ -14,8 +14,9 @@ public class HotelsService {
     public List<Hotel> getAllHotels() {
         return new ArrayList<>();
     }
+    /*!
     public Hotel getHotel() {
         return new Hotel();
     }
-
+    */
 }

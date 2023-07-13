@@ -8,3 +8,22 @@ server:
 # OFF << FATAL << ERROR << WARN << INFO << DEBUG << TRACE << ALL
 logging:
   level.com.example.demo: DEBUG
+validation:
+  nameBlackList:
+    - "Free"
+    - "Offer"
+    - "Book"
+    - "Website"
+  nameSymbolsMin: 10
+  categoryWhiteList:
+    - "hotel"
+    - "alternative"
+    - "hostel"
+    - "lodge"
+    - "resort"
+    - "guest-house"
+  zipCodeLength: 5
+  reputationMin: 0
+  reputationMax: 1000
+  reputationRedThreshold: 500
+  reputationYellowThreshold: 799
