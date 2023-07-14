@@ -3,15 +3,19 @@ package com.example.accommodation.service;
 import com.example.accommodation.model.Location;
 import com.example.accommodation.util.ValidationProperties;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
 
 @Service
 @RequiredArgsConstructor
 public class HotelValidationService {
+    private final static Logger logger = LoggerFactory.getLogger(HotelValidationService.class);
     private final ValidationProperties properties;
 
     public boolean validateName(String name) {
@@ -35,6 +39,7 @@ public class HotelValidationService {
         try {
             new URL(url).toURI();
         } catch (Exception e) {
+            logger.error("URL {} is invalid, error: {}", url, e.getMessage());
             retVal = false;
         }
         return retVal;
