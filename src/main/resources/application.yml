@@ -2,12 +2,25 @@
 spring:
   application:
     name: accommodation
+  datasource:
+    url: "jdbc:h2:mem:testdb"
+    #url: "jdbc:h2:file:P:/data/sample"
+    driverClassName: "org.h2.Driver"
+    username: "sa"
+    password: ""
+    jpa:
+      database-platform: "org.hibernate.dialect.H2Dialect"
+    # Enabling H2 Console
+  h2:
+    console:
+      enabled: true
+      path: "/h2"
 server:
   port: 8070
 # logging
 # OFF << FATAL << ERROR << WARN << INFO << DEBUG << TRACE << ALL
 logging:
-  level.com.example.demo: DEBUG
+  level.com.example.demo: "DEBUG"
 validation:
   nameBlackList:
     - "Free"
@@ -15,6 +28,8 @@ validation:
     - "Book"
     - "Website"
   nameSymbolsMin: 10
+  ratingMin: 0
+  ratingMax: 5
   categoryWhiteList:
     - "hotel"
     - "alternative"

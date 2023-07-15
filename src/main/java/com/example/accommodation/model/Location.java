@@ -7,6 +7,8 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Location {
+    @JsonProperty("id")
+    String locationId;
     @JsonProperty("city")
     String city;
     @JsonProperty("state")
