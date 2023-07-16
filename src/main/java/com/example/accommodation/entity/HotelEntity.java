@@ -1,14 +1,16 @@
 package com.example.accommodation.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 @Entity
-@Table(name = "hotels")
+@Getter
+@Setter
+@EqualsAndHashCode
 @AllArgsConstructor
-@Data
-public class Hotel {
+@NoArgsConstructor
+@Table(name = "hotels")
+public class HotelEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="hotel_id")

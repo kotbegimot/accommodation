@@ -1,11 +1,11 @@
 package com.example.accommodation.dao;
 
-import com.example.accommodation.entity.Hotel;
+import com.example.accommodation.entity.HotelEntity;
 
 import java.util.List;
 
 public interface  HotelDAO {
-    List<Hotel> getAll();
-    Hotel getById(int id);
-    void save(Hotel hotel);
+    List<HotelEntity> getAll();
+    HotelEntity getById(int id);
+    void create(HotelEntity hotel);
 }
