@@ -3,9 +3,10 @@ package com.example.accommodation.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
 @Getter
 @Setter
+@Entity
+@Builder
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,7 +27,7 @@ public class HotelEntity {
     private String category;
 
     @Column(name="location_id")
-    private int location_id;
+    private int location;
 
     @Column(name="image")
     private String imageUrl;
@@ -50,7 +51,7 @@ public class HotelEntity {
                 ", name='" + name + '\'' +
                 ", rating=" + rating +
                 ", category='" + category + '\'' +
-                ", location_id=" + location_id +
+                ", location_id=" + location +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", reputation=" + reputation +
                 ", reputationBadge='" + reputationBadge + '\'' +

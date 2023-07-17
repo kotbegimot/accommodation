@@ -1,17 +1,26 @@
 package com.example.accommodation.service;
 
+import com.example.accommodation.model.Hotel;
+import com.example.accommodation.util.ValidationProperties;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class HotelConversionService {
-    public String calculateReputationBadge(int reputation) {
+    private final ValidationProperties properties;
+    public Hotel convert (Hotel hotel) {
+        hotel.setReputationBadge(calculateReputationBadge(hotel.getReputation()));
+        return hotel;
+    }
+    private String calculateReputationBadge(int reputation) {
         String reputationBadge = "";
-        if (reputation <= 500) {
-            reputationBadge = "red";
-        } else if (reputation <= 799) {
-            reputationBadge = "yellow";
+        if (reputation <= properties.getReputationRedThreshold()) {
+            reputationBadge = properties.getReputationRedBadge();
+        } else if (reputation <= properties.getReputationYellowThreshold()) {
+            reputationBadge = properties.getReputationYellowBadge();
         } else {
-            reputationBadge = "green";
+            reputationBadge = properties.getReputationGreenBadge();
         }
         return reputationBadge;
     }

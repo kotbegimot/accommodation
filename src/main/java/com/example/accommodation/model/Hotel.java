@@ -2,13 +2,15 @@ package com.example.accommodation.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
+@Builder
 public class Hotel {
     @JsonProperty("id")
-    String hotelId;
+    int id;
     @JsonProperty("name")
     String name;
     @JsonProperty("rating")
@@ -16,9 +18,10 @@ public class Hotel {
     @JsonProperty("category")
     String category;
     @JsonProperty("location")
-    Location location;
+    int location;
+    //Location location;
     @JsonProperty("image")
-    String imagePath;
+    String imageUrl;
     @JsonProperty("reputation")
     int reputation;
     @JsonProperty("reputationBadge")

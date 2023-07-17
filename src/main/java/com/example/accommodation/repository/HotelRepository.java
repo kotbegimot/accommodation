@@ -1,5 +1,6 @@
-package com.example.accommodation.dao;
+package com.example.accommodation.repository;
 import com.example.accommodation.entity.HotelEntity;
+import com.example.accommodation.model.exceptions.NoSuchHotelFoundException;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -9,18 +10,16 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class HotelDAOImpl implements HotelDAO {
+public class HotelRepository {
     private final EntityManager entityManager;
 
-    @Override
     public List<HotelEntity> getAll() {
         return entityManager.createQuery("FROM HotelEntity", HotelEntity.class).getResultList();
     }
-    @Override
     public HotelEntity getById(int id) {
         return entityManager.find(HotelEntity.class, id);
     }
-    @Override
+
     @Transactional
     public void create(HotelEntity hotel) {
         entityManager.persist(hotel);
@@ -51,4 +50,6 @@ public class HotelDAOImpl implements HotelDAO {
         HotelEntity deletingHotel = entityManager.find(HotelEntity.class, hotelId);
         entityManager.remove(deletingHotel);
     }
+
+
 }

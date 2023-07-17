@@ -37,4 +37,10 @@ public class ValidationProperties {
     Integer reputationRedThreshold;
     @NotNull(message = "Validation property \"reputationYellowThreshold\" cannot be null: check application.yml")
     Integer reputationYellowThreshold;
+    @NotNull(message = "Validation property \"reputationRedBadge\" cannot be null: check application.yml")
+    String reputationRedBadge;
+    @NotNull(message = "Validation property \"reputationYellowBadge\" cannot be null: check application.yml")
+    String reputationYellowBadge;
+    @NotNull(message = "Validation property \"reputationGreenBadge\" cannot be null: check application.yml")
+    String reputationGreenBadge;
 }

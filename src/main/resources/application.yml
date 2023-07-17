@@ -47,3 +47,6 @@ validation:
   reputationMax: 1000
   reputationRedThreshold: 500
   reputationYellowThreshold: 799
+  reputationRedBadge: "red"
+  reputationYellowBadge": "yellow"
+  reputationGreenBadge: "green"
