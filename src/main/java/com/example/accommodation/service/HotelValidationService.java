@@ -1,45 +1,36 @@
 package com.example.accommodation.service;
 
 import com.example.accommodation.model.Hotel;
-import com.example.accommodation.model.Location;
 import com.example.accommodation.model.exceptions.InvalidRequestException;
 import com.example.accommodation.util.ValidationProperties;
-import jakarta.annotation.PostConstruct;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
 
 @Service
 @RequiredArgsConstructor
-
 public class HotelValidationService {
     private final static Logger logger = LoggerFactory.getLogger(HotelValidationService.class);
     private final ValidationProperties properties;
     private String errorMessage = "";
 
-
     void validate(Hotel hotel) throws InvalidRequestException {
-        Class c = this.getClass();
-        System.out.println("void validate(Hotel hotel)");
         boolean valid = true;
-        for (Method method : c.getDeclaredMethods()) {
+        for (Method method : this.getClass().getDeclaredMethods()) {
             if (Modifier.isPrivate(method.getModifiers())) {
                 try {
                     valid = (boolean) method.invoke(this, hotel);
                     if (!valid)
                         break;
                 } catch (Exception e) {
-                    logger.error("OOOPS: {}", e.getMessage());
+                    logger.error("Validation method invocation error: {}, method: {}", e.getMessage(), method.getName());
                 }
             }
         }
@@ -48,45 +39,59 @@ public class HotelValidationService {
     }
 
     private boolean validateName(Hotel hotel) {
-        logger.info("validateName");
         String name = hotel.getName();
-        boolean retVal = false;
+        boolean valid = false;
         if (name.length() > properties.getNameSymbolsMin()) {
-            retVal = !properties.getNameBlackList().stream().anyMatch(name::contains);
+            valid = properties.getNameBlackList().stream().noneMatch(name::contains);
+            if (!valid)
+                errorMessage = "Hotel name \"%s\" contains restricted words [%s]"
+                        .formatted(name, properties.getNameBlackList().toString());
+        } else {
+            errorMessage = "Hotel name \"%s\" length must be longer than %d"
+                    .formatted(name, properties.getNameSymbolsMin());
         }
-        return retVal;
+        return valid;
     }
     private boolean validateRating(Hotel hotel) {
-        logger.info("validateRating");
         int rating = hotel.getRating();
-        return rating >= properties.getRatingMin() && rating <= properties.getRatingMax();
+        boolean valid = false;
+        valid = rating >= properties.getRatingMin() && rating <= properties.getRatingMax();
+        if (!valid)
+            errorMessage = "Hotel rating \"%d\" must be [%d, %d]"
+                    .formatted(rating, properties.getRatingMin(), properties.getRatingMax());
+        return valid;
     }
     private boolean validateCategory(Hotel hotel) {
-        logger.info("validateCategory");
         String category = hotel.getCategory();
-        return properties.getCategoryWhiteList().stream().anyMatch(category::contains);
+        boolean valid = properties.getCategoryWhiteList().stream().anyMatch(category::contains);
+        if (!valid)
+            errorMessage = "Hotel category \"%s\" must be one of the words: [%s]"
+                    .formatted(category, properties.getCategoryWhiteList().toString());
+        return valid;
     }
     private boolean validateImagePath(Hotel hotel) throws MalformedURLException, URISyntaxException {
-        logger.info("validateImagePath");
         String url = hotel.getImageUrl();
         boolean retVal = true;
         try {
             new URL(url).toURI();
         } catch (Exception e) {
-            errorMessage = "URL %s is invalid, error: %s".formatted(url, e.getMessage());
+            errorMessage = "Hotel image URL \"%s\" is invalid, error: %s".formatted(url, e.getMessage());
             retVal = false;
         }
         return retVal;
     }
     private boolean validateLocation(Hotel hotel) {
-        logger.info("validateLocation");
         return true;
+        // errorMessage = ""
         //return String.valueOf(location.getZipCode()).length() == properties.getZipCodeLength();
     }
 
     private boolean validateReputation(Hotel hotel) {
-        logger.info("validateReputation");
         int reputation = hotel.getReputation();
-        return reputation >= properties.getReputationMin() && reputation <= properties.getReputationMax();
+        boolean valid = reputation >= properties.getReputationMin() && reputation <= properties.getReputationMax();
+        if (!valid)
+            errorMessage = "Hotel reputation \"%d\" must be [%d, %d]"
+                    .formatted(reputation, properties.getReputationMin(), properties.getReputationMax());
+        return valid;
     }
 }

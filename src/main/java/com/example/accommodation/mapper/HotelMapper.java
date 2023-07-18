@@ -31,7 +31,7 @@ public class HotelMapper {
 
     public HotelEntity toEntity(Hotel hotel) {
         return HotelEntity.builder()
-                .id(0) // set id to zero, because it is auto generated value in the DB
+                .id(hotel.getId())
                 .name(hotel.getName())
                 .rating(hotel.getRating())
                 .category(hotel.getCategory())

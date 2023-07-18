@@ -46,6 +46,7 @@ public class HotelsController {
     @PostMapping("/api/v1/hotels/create")
     @ResponseBody
     public void createHotel (@RequestBody Hotel newHotel) {
+        newHotel.setId(0); // set id to zero, because it is auto generated value in the DB
         service.createHotel(newHotel);
     }
 

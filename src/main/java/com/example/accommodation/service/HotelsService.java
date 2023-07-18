@@ -25,16 +25,19 @@ public class HotelsService {
 
     public Hotel getHotel(int id) {
         HotelEntity entity = checkEntityById(id);
-        validationService.validate(mapper.toModel(entity));
         return mapper.toModel(entity);
     }
 
     public void createHotel(Hotel newHotel) {
+        validationService.validate(newHotel);
+        newHotel = conversionService.convert(newHotel);
         repository.create(mapper.toEntity(newHotel));
     }
 
     public Hotel updateHotel(Hotel updateHotel) {
         checkEntityById(updateHotel.getId());
+        validationService.validate(updateHotel);
+        updateHotel = conversionService.convert(updateHotel);
         return mapper.toModel(repository.updateHotel(mapper.toEntity(updateHotel)));
     }
 
