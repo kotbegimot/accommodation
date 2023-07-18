@@ -2,6 +2,8 @@ package com.example.accommodation.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 @Getter
 @Setter
@@ -26,8 +28,10 @@ public class HotelEntity {
     @Column(name="category")
     private String category;
 
-    @Column(name="location_id")
-    private int location;
+    @ManyToOne()
+    @Cascade(CascadeType.PERSIST)
+    @JoinColumn(name="location_id")
+    private LocationEntity locationEntity;
 
     @Column(name="image")
     private String imageUrl;
@@ -51,7 +55,7 @@ public class HotelEntity {
                 ", name='" + name + '\'' +
                 ", rating=" + rating +
                 ", category='" + category + '\'' +
-                ", location_id=" + location +
+                ", location_id=" + locationEntity.toString() +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", reputation=" + reputation +
                 ", reputationBadge='" + reputationBadge + '\'' +

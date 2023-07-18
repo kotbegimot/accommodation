@@ -26,7 +26,7 @@ CREATE TABLE hotels (
   reputation INT DEFAULT 0,
   reputationBadge VARCHAR(10) DEFAULT NULL,
   price INT DEFAULT 0,
-  avaliability INT DEFAULT 0,
+  availability INT DEFAULT 0,
   FOREIGN KEY (location_id) REFERENCES locations(location_id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 INSERT INTO hotels (name, rating, category, location_id, image, reputation, reputationBadge, price, availability) VALUES

@@ -11,7 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController("/api/v1/hotels")
+import static com.example.accommodation.util.Globals.BASE_URL;
+
+@RestController
+@RequestMapping(value = BASE_URL)
 @RequiredArgsConstructor
 public class HotelsController {
     private final HotelsService service;
@@ -21,67 +24,45 @@ public class HotelsController {
      * @return all products in JSON format
      */
 
-    @GetMapping("/api/v1/hotels")
+    @GetMapping()
     @ResponseBody
-    public Catalogue getHotels() {
+    public Catalogue getHotels(@PathVariable(required = false) Integer reputation) {
+        if (reputation != null) {
+            return new Catalogue(service.getHotelsByRating(reputation));
+        }
         return new Catalogue(service.getAllHotels());
     }
 
-    /**
-     *
-     * @param id
-     * @return
-     */
-    @GetMapping("/api/v1/hotels/{id}")
+    @GetMapping("/{id}")
     @ResponseBody
     public Hotel getHotel(@PathVariable int id) {
         return service.getHotel(id);
     }
 
-    /**
-     *
-     * @param newHotel
-     * @return
-     */
-    @PostMapping("/api/v1/hotels/create")
+    @PostMapping("/create")
     @ResponseBody
     public void createHotel (@RequestBody Hotel newHotel) {
-        newHotel.setId(0); // set id to zero, because it is auto generated value in the DB
         service.createHotel(newHotel);
     }
 
-    /**
-     *
-     * @param id
-     * @param updateHotel
-     * @return
-     */
-    @PutMapping("/api/v1/hotels/update/{id}")
+    @PutMapping("/update/{id}")
     @ResponseBody
     public Hotel updateHotel (@PathVariable int id, @RequestBody Hotel updateHotel) {
         updateHotel.setId(id);
         return service.updateHotel(updateHotel);
     }
 
-    /**
-     *
-     * @param id
-     * @return changed hotel object
-     */
-    @PutMapping("/api/v1/hotels/book/{id}")
+    @PutMapping("/book/{id}")
     @ResponseBody
     public Hotel bookHotel (@PathVariable int id) {
         return service.bookHotel(id);
     }
 
-    /**
-     *
-     * @param id
-     */
-    @DeleteMapping("/api/v1/hotels/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteHotel(@PathVariable int id) {
         service.deleteHotel(id);
     }
+
 
     @ExceptionHandler(NoSuchHotelFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)

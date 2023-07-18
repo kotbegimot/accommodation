@@ -18,8 +18,8 @@ public class Hotel {
     @JsonProperty("category")
     String category;
     @JsonProperty("location")
-    int location;
-    //Location location;
+    //int location;
+    Location location;
     @JsonProperty("image")
     String imageUrl;
     @JsonProperty("reputation")

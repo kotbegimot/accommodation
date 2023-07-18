@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 @Service
@@ -54,8 +52,7 @@ public class HotelValidationService {
     }
     private boolean validateRating(Hotel hotel) {
         int rating = hotel.getRating();
-        boolean valid = false;
-        valid = rating >= properties.getRatingMin() && rating <= properties.getRatingMax();
+        boolean valid = rating >= properties.getRatingMin() && rating <= properties.getRatingMax();
         if (!valid)
             errorMessage = "Hotel rating \"%d\" must be [%d, %d]"
                     .formatted(rating, properties.getRatingMin(), properties.getRatingMax());
@@ -69,7 +66,7 @@ public class HotelValidationService {
                     .formatted(category, properties.getCategoryWhiteList().toString());
         return valid;
     }
-    private boolean validateImagePath(Hotel hotel) throws MalformedURLException, URISyntaxException {
+    private boolean validateImagePath(Hotel hotel) {
         String url = hotel.getImageUrl();
         boolean retVal = true;
         try {
@@ -81,9 +78,12 @@ public class HotelValidationService {
         return retVal;
     }
     private boolean validateLocation(Hotel hotel) {
-        return true;
-        // errorMessage = ""
-        //return String.valueOf(location.getZipCode()).length() == properties.getZipCodeLength();
+        int zipCode = hotel.getLocation().getZipCode();
+        boolean valid = String.valueOf(zipCode).length() == properties.getZipCodeLength();
+        if (!valid)
+            errorMessage = "Location zip code \"%d\" must have a length of %d"
+                    .formatted(zipCode, properties.getZipCodeLength());
+        return valid;
     }
 
     private boolean validateReputation(Hotel hotel) {

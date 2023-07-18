@@ -1,7 +1,6 @@
 package com.example.accommodation.repository;
 
 import com.example.accommodation.entity.HotelEntity;
-import com.example.accommodation.model.exceptions.NoSuchHotelFoundException;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -39,5 +38,25 @@ public class HotelRepository {
         entityManager.remove(deletingHotel);
     }
 
+    public List<HotelEntity> getHotelsByRating(int reputation) {
+        return entityManager
+                .createQuery(String.format("From HotelEntity WHERE reputation=%s", reputation)
+                        , HotelEntity.class)
+                .getResultList();
+    }
 
+    public List<HotelEntity> getHotelsByLocation(String location){
+        //TODO: test when added second table
+        return entityManager
+                .createQuery(String.format("SELECT h FROM HotelEntity h, Location l, WHERE l.location=%s", location),
+                        HotelEntity.class)
+                .getResultList();
+    }
+
+    public List<HotelEntity> getHotelsByBadge(String reputationBadge){
+        return entityManager
+                .createQuery(String.format("From HotelEntity WHERE reputationBadge = %s", reputationBadge)
+                        , HotelEntity.class)
+                .getResultList();
+    }
 }

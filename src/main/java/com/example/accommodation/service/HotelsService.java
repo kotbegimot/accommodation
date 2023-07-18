@@ -62,4 +62,15 @@ public class HotelsService {
         }
         return entity;
     }
+    public List<Hotel> getHotelsByRating(int rating) {
+        return mapper.toModels(repository.getHotelsByRating(rating));
+    }
+
+    public List<Hotel> getHotelsByLocation(String location) {
+        return mapper.toModels(repository.getHotelsByLocation(location));
+    }
+
+    public List<Hotel> getHotelsByBadge(String reputationBadge) {
+        return mapper.toModels(repository.getHotelsByBadge(reputationBadge));
+    }
 }
