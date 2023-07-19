@@ -19,7 +19,9 @@ To run the application execute from the application folder: ```docker-compose up
 The application will run on http://localhost:8070.
 
 The DB can be accessed via [mysql://localhost:3306/hotels_db](mysql://localhost:3306/hotels_db).
-It is pre-filled with mock data for test purposes via `init.sql` in the app root folder . 
+It is pre-filled with mock data for test purposes via `init.sql` in the app root folder.
+
+_Note_: it takes DB a couple of moments to start. Until it is started the application will fail with Connection Error. It will be resolved once DB is up.
 
 ### Development requirements
 - Java 17
