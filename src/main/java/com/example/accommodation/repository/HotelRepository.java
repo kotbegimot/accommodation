@@ -40,23 +40,25 @@ public class HotelRepository {
 
     public List<HotelEntity> getHotelsByRating(int reputation) {
         return entityManager
-                .createQuery(String.format("From HotelEntity WHERE reputation=%s", reputation)
-                        , HotelEntity.class)
-                .getResultList();
-    }
-
-    public List<HotelEntity> getHotelsByLocation(String location){
-        //TODO: test when added second table
-        return entityManager
-                .createQuery(String.format("SELECT h FROM HotelEntity h, Location l, WHERE l.location=%s", location),
+                .createQuery(String.format("From HotelEntity WHERE reputation=%s", reputation),
                         HotelEntity.class)
                 .getResultList();
     }
 
-    public List<HotelEntity> getHotelsByBadge(String reputationBadge){
+    public List<HotelEntity> getHotelsByLocation(String location) {
+
         return entityManager
-                .createQuery(String.format("From HotelEntity WHERE reputationBadge = %s", reputationBadge)
-                        , HotelEntity.class)
+                .createQuery(String.format("SELECT h FROM HotelEntity h, LocationEntity l " +
+                                        "WHERE h.locationEntity = l.id AND l.city = %s",
+                                location),
+                        HotelEntity.class)
+                .getResultList();
+    }
+
+    public List<HotelEntity> getHotelsByBadge(String reputationBadge) {
+        return entityManager
+                .createQuery(String.format("From HotelEntity WHERE reputationBadge = %s", reputationBadge),
+                        HotelEntity.class)
                 .getResultList();
     }
 }

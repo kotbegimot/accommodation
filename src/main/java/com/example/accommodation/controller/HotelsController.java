@@ -26,9 +26,16 @@ public class HotelsController {
 
     @GetMapping()
     @ResponseBody
-    public Catalogue getHotels(@PathVariable(required = false) Integer reputation) {
-        if (reputation != null) {
+    public Catalogue getHotels(@RequestParam(required = false) Integer reputation,
+                               @RequestParam(required = false) String location,
+                               @RequestParam(required = false) String reputationBadge)
+    {
+        if (reputation != null && reputation > 0) {
             return new Catalogue(service.getHotelsByRating(reputation));
+        } else if (location != null && !location.isEmpty()) {
+            return new Catalogue(service.getHotelsByLocation(location));
+        } else if (reputationBadge != null && !reputationBadge.isEmpty()) {
+            return new Catalogue(service.getHotelsByBadge(reputationBadge));
         }
         return new Catalogue(service.getAllHotels());
     }
