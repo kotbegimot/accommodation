@@ -4,6 +4,7 @@ package com.example.accommodation.util;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.annotation.Validated;
 import jakarta.validation.constraints.NotEmpty;
@@ -12,6 +13,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 @Configuration
+@EnableCaching
 @ConfigurationProperties(prefix = "validation")
 @Getter
 @Setter
