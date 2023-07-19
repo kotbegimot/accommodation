@@ -1,6 +1,5 @@
 package com.example.accommodation.entity;
 
-import com.example.accommodation.model.Hotel;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
@@ -32,7 +31,6 @@ public class LocationEntity {
     @Column(name="country")
     private String country;
 
-    // some countries zip codes contain symbols: e.g. United Kingdom: LU2 9RN (Luton)
     @Column(name="zip_code")
     private int zipCode;
 

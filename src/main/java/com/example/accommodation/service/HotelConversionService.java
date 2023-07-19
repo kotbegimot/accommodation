@@ -14,7 +14,7 @@ public class HotelConversionService {
         return hotel;
     }
     private String calculateReputationBadge(int reputation) {
-        String reputationBadge = "";
+        String reputationBadge;
         if (reputation <= properties.getReputationRedThreshold()) {
             reputationBadge = properties.getReputationRedBadge();
         } else if (reputation <= properties.getReputationYellowThreshold()) {

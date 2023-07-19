@@ -1,12 +1,8 @@
 package com.example.accommodation.mapper;
 
-import com.example.accommodation.entity.HotelEntity;
 import com.example.accommodation.entity.LocationEntity;
-import com.example.accommodation.model.Hotel;
 import com.example.accommodation.model.Location;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class LocationMapper {
