@@ -18,7 +18,7 @@ import java.util.List;
 public class HotelRepository {
     private final EntityManager entityManager;
 
-    @Cacheable()
+
     public List<HotelEntity> getAll() {
         return entityManager.createQuery("FROM HotelEntity", HotelEntity.class).getResultList();
     }
