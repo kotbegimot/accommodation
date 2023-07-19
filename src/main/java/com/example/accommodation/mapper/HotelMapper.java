@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * Class used to convert objects from Hotel Entity to Hotel Model and back.
+ */
 @Component
 @RequiredArgsConstructor
 public class HotelMapper {

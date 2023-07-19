@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Contains set of methods that process requests from HotelsController for each business case.
+ */
 @Service
 @RequiredArgsConstructor
 public class HotelsService {

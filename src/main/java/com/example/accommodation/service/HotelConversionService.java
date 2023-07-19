@@ -5,6 +5,9 @@ import com.example.accommodation.util.ValidationProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * Class contains method to calculate the correct reputation badge from numerical value.
+ */
 @Service
 @RequiredArgsConstructor
 public class HotelConversionService {

@@ -3,7 +3,9 @@ package com.example.accommodation.mapper;
 import com.example.accommodation.entity.LocationEntity;
 import com.example.accommodation.model.Location;
 import org.springframework.stereotype.Component;
-
+/**
+ * Class used to convert objects from Location Entity to Location Model and back.
+ */
 @Component
 public class LocationMapper {
     public Location toModel(LocationEntity entity) {

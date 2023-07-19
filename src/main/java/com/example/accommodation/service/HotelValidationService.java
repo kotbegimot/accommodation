@@ -12,6 +12,15 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 
+/**
+ * Implementation of validation per parameters:
+ * - name
+ * - rating
+ * - category
+ * - image URL
+ * - location
+ * - reputation
+ */
 @Service
 @RequiredArgsConstructor
 public class HotelValidationService {

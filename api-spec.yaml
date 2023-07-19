@@ -1,0 +1,126 @@
+openapi: "3.0.3"
+info:
+  title: "accommodation API"
+  description: "accommodation API"
+  version: "1.0.0"
+servers:
+ - url: "https://accommodation:"
+   port: 8070
+paths:
+  /api/v1/hotels:
+    get:
+      summary: "GET all hotels"
+      description: "Get all accommodations available in the catalogue. Returns JSON Array."
+      operationId: "getHotels"
+      parameters:
+        - name: "reputation"
+          in: "query"
+          required: false
+          schema:
+            type: "integer"
+            format: "int32"
+        - name: "location"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+        - name: "reputationBadge"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+  /api/v1/hotels/book/{id}:
+    put:
+      summary: "Book Accommodation by ID"
+      description: "Endpoint is used to book an accommodation by using its id. Decreases its availability by 1."
+      operationId: "bookHotel"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+  /api/v1/hotels/create:
+    post:
+      summary: "Create accommodation"
+      operationId: "Creates a new accommodation"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: "object"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+  /api/v1/hotels/delete/{id}:
+    delete:
+      summary: "Delete accommodation"
+      operationId: "Delete an acommodation by ID"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+      responses:
+        "200":
+          description: "OK"
+  /api/v1/hotels/update/{id}:
+    put:
+      summary: "Update accommodation by ID"
+      operationId: "Update accommodation by ID"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: "object"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+  /api/v1/hotels/{id}:
+    get:
+      summary: "Get hotel by ID"
+      operationId: "Returns a JSON containing information about the requested accommodation."
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"

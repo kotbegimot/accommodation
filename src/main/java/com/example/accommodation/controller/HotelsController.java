@@ -12,18 +12,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import static com.example.accommodation.util.Globals.BASE_URL;
-
 @RestController
 @RequestMapping(value = BASE_URL)
 @RequiredArgsConstructor
+
 public class HotelsController {
     private final HotelsService service;
 
     /**
-     * "Get" request for getting all products after deduplication
-     * @return all products in JSON format
+     *  GET request for getting all hotels in the catalogue.
+     *  Support optional filters by fields:
+     * - reputation
+     * - location
+     * - reputationBadge
+     * @param reputation - reputation filter value
+     * @param location - location filter value
+     * @param reputationBadge - reputationBadge filter value
+     * @return list of hotel objects in JSON format
      */
-
     @GetMapping()
     @ResponseBody
     public Catalogue getHotels(@RequestParam(required = false) Integer reputation,
@@ -40,18 +46,35 @@ public class HotelsController {
         return new Catalogue(service.getAllHotels());
     }
 
+    /**
+     * GET request that returns accommodation by ID.
+     * @param id - hotel ID
+     * @return hotel object
+     */
     @GetMapping("/{id}")
     @ResponseBody
     public Hotel getHotel(@PathVariable int id) {
         return service.getHotel(id);
     }
 
+    /**
+     * Creates new hotel entity
+     * Validates fields of hotel object from request
+     * @param newHotel - hotel object
+     */
     @PostMapping("/create")
     @ResponseBody
     public void createHotel (@RequestBody Hotel newHotel) {
         service.createHotel(newHotel);
     }
 
+    /**
+     * PUT method to update accommodation by ID.
+     * @param id - hotel ID
+     * @param updateHotel - JSON object containing fields that will be updated.
+     * Note: it is strongly recommended to provide all fields (See README.md)
+     * @return updated hotel object.
+     */
     @PutMapping("/update/{id}")
     @ResponseBody
     public Hotel updateHotel (@PathVariable int id, @RequestBody Hotel updateHotel) {
@@ -59,18 +82,30 @@ public class HotelsController {
         return service.updateHotel(updateHotel);
     }
 
+    /**
+     * PUT method for hotel booking.
+     * As the result of using this endpoint, availability of the hotel will be decremented.
+     * @param id - id of the hotel to book
+     * @return hotel object.
+     */
     @PutMapping("/book/{id}")
     @ResponseBody
     public Hotel bookHotel (@PathVariable int id) {
         return service.bookHotel(id);
     }
 
+    /**
+     * DELETE request that removes accommodation by ID.
+     * @param id - hotel ID
+     */
     @DeleteMapping("/delete/{id}")
     public void deleteHotel(@PathVariable int id) {
         service.deleteHotel(id);
     }
 
-
+    /**
+     * Custom exception, returns 404 if the requested hotel does not exist.
+     */
     @ExceptionHandler(NoSuchHotelFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<String> handleNoSuchHotelFoundException(NoSuchHotelFoundException exception) {
@@ -79,6 +114,9 @@ public class HotelsController {
                 .body(exception.getMessage());
     }
 
+    /**
+     * Custom exception, returns 405 if when booking a hotel, the availability is 0.
+     */
     @ExceptionHandler(AvailabilityIsZeroException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public ResponseEntity<String> handleAvailabilityIsZeroException(AvailabilityIsZeroException exception) {
@@ -87,6 +125,9 @@ public class HotelsController {
                 .body(exception.getMessage());
     }
 
+    /**
+     * Custom exception, returns 400 if POST or PUT request body contains invalid values.
+     */
     @ExceptionHandler(InvalidRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<String> handleInvalidRequestException(InvalidRequestException exception) {

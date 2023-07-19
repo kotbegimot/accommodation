@@ -12,6 +12,9 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
+/**
+ * Validation properties for hotels and locations.
+ */
 @Configuration
 @EnableCaching
 @ConfigurationProperties(prefix = "validation")
