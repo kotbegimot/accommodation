@@ -1,3 +1,12 @@
+USE hotels_db;
+CREATE TABLE IF NOT EXISTS locations (
+  location_id INT AUTO_INCREMENT PRIMARY KEY,
+  city VARCHAR(255) DEFAULT NULL,
+  state VARCHAR(255) DEFAULT NULL,
+  country VARCHAR(255) DEFAULT NULL,
+  zip_code INT DEFAULT 0,
+  address VARCHAR(255) DEFAULT NULL
+) ENGINE=InnoDB;
 INSERT INTO locations(city, state, country, zip_code, address)
 VALUES
 ('Santa Monica', 'California', 'USA', 90401, '1670 Ocean Ave Santa Monica'),
@@ -5,6 +14,19 @@ VALUES
 ('Dusseldorf', 'Nordrhein westphalia', 'Germany', 40221, 'Volmerswerther Deich 658'),
 ('Luton', 'Luton', 'United Kingdom', 29600, '100 Oving Cl'),
 ('Omsk', 'Omsk district', 'Russia', 64402, 'Slesarnaya str. 666');
+CREATE TABLE IF NOT EXISTS hotels (
+  hotel_id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) DEFAULT NULL,
+  rating INT DEFAULT 0,
+  category VARCHAR(20) DEFAULT NULL,
+  location_id INT,
+  image VARCHAR(255) DEFAULT NULL,
+  reputation INT DEFAULT 0,
+  reputation_badge VARCHAR(10) DEFAULT NULL,
+  price INT DEFAULT 0,
+  availability INT DEFAULT 0,
+  FOREIGN KEY (location_id) REFERENCES locations(location_id) ON DELETE SET NULL
+) ENGINE=InnoDB;
 INSERT INTO hotels (name, rating, category, location_id, image, reputation, reputation_badge, price, availability) VALUES
   ('California hotel', 5, 'hotel', 1, 'http://california/img.com', 999, 'green', 150, 30),
   ('Budapest hotel', 4, 'hotel', 2, 'http://budapest/budapest_logo.com', 850, 'green', 78, 10),
