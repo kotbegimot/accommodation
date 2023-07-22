@@ -23,6 +23,10 @@ It is pre-filled with mock data for test purposes via `init.sql` in the app root
 
 _Note_: it takes DB a couple of moments to start. Until it is started the application will fail with Connection Error. It will be resolved once DB is up.
 
+### How to check app build
+
+`.\mvnw clean install`
+
 ### Development requirements
 - Java 17
 - Spring Boot 3.0.0^

@@ -48,4 +48,18 @@ public class ValidationProperties {
     String reputationYellowBadge;
     @NotNull(message = "Validation property \"reputationGreenBadge\" cannot be null: check application.yml")
     String reputationGreenBadge;
+    @NotNull(message = "Validation property \"errorMsgNameContainsRestrictedWords\" cannot be null: check application.yml")
+    String errorMsgNameContainsRestrictedWords;
+    @NotNull(message = "Validation property \"errorMsgNameIsShort\" cannot be null: check application.yml")
+    String errorMsgNameIsShort;
+    @NotNull(message = "Validation property \"errorInvalidRating\" cannot be null: check application.yml")
+    String errorInvalidRating;
+    @NotNull(message = "Validation property \"errorInvalidCategory\" cannot be null: check application.yml")
+    String errorInvalidCategory;
+    @NotNull(message = "Validation property \"errorImageUrl\" cannot be null: check application.yml")
+    String errorImageUrl;
+    @NotNull(message = "Validation property \"errorLocationZipCode\" cannot be null: check application.yml")
+    String errorLocationZipCode;
+    @NotNull(message = "Validation property \"errorReputation\" cannot be null: check application.yml")
+    String errorReputation;
 }

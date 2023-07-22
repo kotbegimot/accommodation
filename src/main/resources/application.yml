@@ -37,3 +37,10 @@ validation:
   reputationRedBadge: "red"
   reputationYellowBadge": "yellow"
   reputationGreenBadge: "green"
+  errorMsgNameContainsRestrictedWords: Hotel name "%s" contains restricted words [%s]
+  errorMsgNameIsShort: Hotel name "%s" length must be longer than %d
+  errorInvalidRating: Hotel rating "%d" must be [%d, %d]
+  errorInvalidCategory: Hotel category %s must be one of the words [%s]
+  errorImageUrl: Hotel image URL "%s" is invalid, error "%s"
+  errorLocationZipCode: Location zip code "%d" must have a length of %d
+  errorReputation: Hotel reputation "%d" must be [%d, %d]

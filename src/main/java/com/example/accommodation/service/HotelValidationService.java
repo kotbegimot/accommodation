@@ -45,16 +45,20 @@ public class HotelValidationService {
             throw new InvalidRequestException(errorMessage);
     }
 
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
     private boolean validateName(Hotel hotel) {
         String name = hotel.getName();
         boolean valid = false;
         if (name.length() > properties.getNameSymbolsMin()) {
             valid = properties.getNameBlackList().stream().noneMatch(name::contains);
             if (!valid)
-                errorMessage = "Hotel name \"%s\" contains restricted words [%s]"
+                errorMessage = properties.getErrorMsgNameContainsRestrictedWords()
                         .formatted(name, properties.getNameBlackList().toString());
         } else {
-            errorMessage = "Hotel name \"%s\" length must be longer than %d"
+            errorMessage = properties.getErrorMsgNameIsShort()
                     .formatted(name, properties.getNameSymbolsMin());
         }
         return valid;
@@ -63,7 +67,7 @@ public class HotelValidationService {
         int rating = hotel.getRating();
         boolean valid = rating >= properties.getRatingMin() && rating <= properties.getRatingMax();
         if (!valid)
-            errorMessage = "Hotel rating \"%d\" must be [%d, %d]"
+            errorMessage = properties.getErrorInvalidRating()
                     .formatted(rating, properties.getRatingMin(), properties.getRatingMax());
         return valid;
     }
@@ -71,7 +75,7 @@ public class HotelValidationService {
         String category = hotel.getCategory();
         boolean valid = properties.getCategoryWhiteList().stream().anyMatch(category::contains);
         if (!valid)
-            errorMessage = "Hotel category \"%s\" must be one of the words: [%s]"
+            errorMessage = properties.getErrorInvalidCategory()
                     .formatted(category, properties.getCategoryWhiteList().toString());
         return valid;
     }
@@ -81,7 +85,7 @@ public class HotelValidationService {
         try {
             new URL(url).toURI();
         } catch (Exception e) {
-            errorMessage = "Hotel image URL \"%s\" is invalid, error: %s".formatted(url, e.getMessage());
+            errorMessage = properties.getErrorImageUrl().formatted(url, e.getMessage());
             retVal = false;
         }
         return retVal;
@@ -90,7 +94,7 @@ public class HotelValidationService {
         int zipCode = hotel.getLocation().getZipCode();
         boolean valid = String.valueOf(zipCode).length() == properties.getZipCodeLength();
         if (!valid)
-            errorMessage = "Location zip code \"%d\" must have a length of %d"
+            errorMessage = properties.getErrorLocationZipCode()
                     .formatted(zipCode, properties.getZipCodeLength());
         return valid;
     }
@@ -99,7 +103,7 @@ public class HotelValidationService {
         int reputation = hotel.getReputation();
         boolean valid = reputation >= properties.getReputationMin() && reputation <= properties.getReputationMax();
         if (!valid)
-            errorMessage = "Hotel reputation \"%d\" must be [%d, %d]"
+            errorMessage = properties.getErrorReputation()
                     .formatted(reputation, properties.getReputationMin(), properties.getReputationMax());
         return valid;
     }
