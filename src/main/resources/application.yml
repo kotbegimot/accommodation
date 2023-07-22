@@ -2,18 +2,8 @@
 spring:
   application:
     name: accommodation
-  datasource:
-    url: "jdbc:mysql://localhost:3306/hotels_db"
-    driverClassName: "com.mysql.jdbc.Driver"
-    username: "root"
-    password: "root"
-    jpa:
-      show-sql: true
-      database-platform: "org.hibernate.dialect.MySQL5InnoDBDialect"
-      defer-datasource-initialization: true
-      generate-ddl: true
-      hibernate:
-        ddl-auto: update
+  profiles:
+    active: "dev"
 server:
   port: 8070
   error:
