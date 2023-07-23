@@ -21,6 +21,13 @@ public class HotelsService {
     private final HotelMapper mapper;
     private final HotelValidationService validationService;
     private final HotelConversionService conversionService;
+    private HotelEntity checkEntityById(int id) throws NoSuchHotelFoundException {
+        HotelEntity entity = repository.getById(id);
+        if (entity == null) {
+            throw new NoSuchHotelFoundException(id);
+        }
+        return entity;
+    }
 
     public List<Hotel> getAllHotels() {
         return mapper.toModels(repository.getAll());
@@ -56,14 +63,6 @@ public class HotelsService {
     public void deleteHotel(int id) {
         checkEntityById(id);
         repository.deleteHotel(id);
-    }
-
-    private HotelEntity checkEntityById(int id) throws NoSuchHotelFoundException {
-        HotelEntity entity = repository.getById(id);
-        if (entity == null) {
-            throw new NoSuchHotelFoundException(id);
-        }
-        return entity;
     }
     public List<Hotel> getHotelsByRating(int rating) {
         return mapper.toModels(repository.getHotelsByRating(rating));
