@@ -32,7 +32,7 @@ class HotelsControllerTest {
     private List<Hotel> hotels;
 
     @BeforeEach
-    public void setup() {
+    public void setUp() {
         Location location = new Location(1, "city", "state",
                 "country", 480011, "address");
         hotels = new ArrayList<>();
@@ -42,6 +42,11 @@ class HotelsControllerTest {
                 "url2", 200, "yellow", 200, 20));
         hotels.add(new Hotel(3, "name3", 300, "category3", location,
                 "url3", 300, "green", 300, 30));
+    }
+
+    @AfterEach
+    public void tearDown() {
+        hotels.clear();
     }
 
     @Test

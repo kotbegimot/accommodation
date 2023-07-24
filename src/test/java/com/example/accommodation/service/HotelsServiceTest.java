@@ -6,6 +6,7 @@ import com.example.accommodation.mapper.HotelMapper;
 import com.example.accommodation.model.Hotel;
 import com.example.accommodation.model.Location;
 import com.example.accommodation.model.exceptions.AvailabilityIsZeroException;
+import com.example.accommodation.model.exceptions.InvalidRequestException;
 import com.example.accommodation.model.exceptions.NoSuchHotelFoundException;
 import com.example.accommodation.repository.HotelRepository;
 import org.junit.jupiter.api.Assertions;
@@ -18,9 +19,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+
 @ExtendWith(MockitoExtension.class)
 class HotelsServiceTest {
     @Mock
@@ -35,6 +38,8 @@ class HotelsServiceTest {
     private HotelsService service;
     private HotelEntity entity;
     private Hotel hotel;
+    private List<HotelEntity> entityList;
+    private List<Hotel> modelList;
     @BeforeEach
     public void setup() {
         entity = HotelEntity.builder()
@@ -61,8 +66,19 @@ class HotelsServiceTest {
                 .price(0)
                 .availability(0)
                 .build();
+        entityList = List.of(entity);
+        modelList = List.of(hotel);
     }
 
+    @Test
+    @DisplayName("Service should return list of Hotel objects")
+    void getAllHotels() {
+        when(repository.getAll()).thenReturn(entityList);
+        when(mapper.toModels(entityList)).thenReturn(modelList);
+        assertEquals(service.getAllHotels(), modelList);
+        verify(repository, times(1)).getAll();
+        verify(mapper, times(1)).toModels(entityList);
+    }
     @Test
     @DisplayName("Service should throw the NoSuchHotelFoundException exception")
     void getUnexistingHotel() {
@@ -70,6 +86,7 @@ class HotelsServiceTest {
             int id = 1;
             when(repository.getById(id)).thenReturn(null);
             service.getHotel(id);
+            verify(repository, times(1)).getById(id);
         });
     }
 
@@ -82,6 +99,51 @@ class HotelsServiceTest {
         when(repository.getById(id)).thenReturn(entity);
         when(mapper.toModel(entity)).thenReturn(hotel);
         assertEquals(service.getHotel(id), hotel);
+        verify(repository, times(1)).getById(id);
+    }
+    @Test
+    @DisplayName("Service should throw the InvalidRequestException exception")
+    void createHotelValidationFailed() {
+        Assertions.assertThrows(InvalidRequestException.class, () -> {
+            doThrow(InvalidRequestException.class).when(validationService).validate(hotel);
+            service.createHotel(hotel);
+        });
+    }
+
+    @Test
+    @DisplayName("Service should execute hotel creation")
+    void createHotelExecuted() {
+        doNothing().when(validationService).validate(hotel);
+        when(conversionService.convert(hotel)).thenReturn(hotel);
+        when(mapper.toEntity(hotel)).thenReturn(entity);
+        service.createHotel(hotel);
+        verify(repository, times(1)).create(entity);
+    }
+
+    @Test
+    @DisplayName("Service should throw the NoSuchHotelFoundException exception")
+    void updateUnexistingHotel() {
+        Assertions.assertThrows(NoSuchHotelFoundException.class, () -> {
+            hotel.setId(1);
+            when(repository.getById(hotel.getId())).thenReturn(null);
+            service.updateHotel(hotel);
+            verify(repository, times(1)).getById(hotel.getId());
+        });
+    }
+
+    @Test
+    @DisplayName("Service should execute hotel updating")
+    void updateExistingHotel() {
+        hotel.setId(1);
+        when(repository.getById(hotel.getId())).thenReturn(entity);
+        doNothing().when(validationService).validate(hotel);
+        when(conversionService.convert(hotel)).thenReturn(hotel);
+        when(mapper.toEntity(hotel)).thenReturn(entity);
+        when(mapper.toModel(entity)).thenReturn(hotel);
+        when(repository.updateHotel(entity)).thenReturn(entity);
+        service.updateHotel(hotel);
+        verify(repository, times(1)).getById(hotel.getId());
+        verify(repository, times(1)).updateHotel(entity);
     }
 
     @Test
@@ -97,7 +159,7 @@ class HotelsServiceTest {
     }
 
     @Test
-    @DisplayName("Service should throw the AvailabilityIsZeroException exception")
+    @DisplayName("Service should execute book accommodation")
     void bookHotelSuccess() {
         int id = 1;
         entity.setId(id);
@@ -105,5 +167,48 @@ class HotelsServiceTest {
         when(repository.getById(id)).thenReturn(entity);
         service.bookHotel(id);
         assertEquals(entity.getAvailability(), 0);
+    }
+
+    @Test
+    @DisplayName("Service should execute hotel deletion")
+    void deleteHotelExecuted() {
+        int id = 1;
+        when(repository.getById(id)).thenReturn(entity);
+        service.deleteHotel(id);
+        verify(repository, times(1)).deleteHotel(id);
+        verify(repository, times(1)).getById(id);
+    }
+
+    @Test
+    @DisplayName("Service should return list of Hotel objects")
+    void getHotelsByRatingSuccess() {
+        int rating = 0;
+        when(repository.getHotelsByRating(rating)).thenReturn(entityList);
+        when(mapper.toModels(entityList)).thenReturn(modelList);
+        assertEquals(service.getHotelsByRating(rating), modelList);
+        verify(repository, times(1)).getHotelsByRating(rating);
+        verify(mapper, times(1)).toModels(entityList);
+    }
+
+    @Test
+    @DisplayName("Service should return list of Hotel objects")
+    void getHotelsByLocationSuccess() {
+        String location = "city";
+        when(repository.getHotelsByLocation(location)).thenReturn(entityList);
+        when(mapper.toModels(entityList)).thenReturn(modelList);
+        assertEquals(service.getHotelsByLocation(location), modelList);
+        verify(repository, times(1)).getHotelsByLocation(location);
+        verify(mapper, times(1)).toModels(entityList);
+    }
+
+    @Test
+    @DisplayName("Service should return list of Hotel objects")
+    void getHotelsByBadgeSuccess() {
+        String reputationBadge = "red";
+        when(repository.getHotelsByBadge(reputationBadge)).thenReturn(entityList);
+        when(mapper.toModels(entityList)).thenReturn(modelList);
+        assertEquals(service.getHotelsByBadge(reputationBadge), modelList);
+        verify(repository, times(1)).getHotelsByBadge(reputationBadge);
+        verify(mapper, times(1)).toModels(entityList);
     }
 }
