@@ -9,6 +9,7 @@ import com.example.accommodation.model.exceptions.AvailabilityIsZeroException;
 import com.example.accommodation.model.exceptions.NoSuchHotelFoundException;
 import com.example.accommodation.repository.HotelRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +33,35 @@ class HotelsServiceTest {
     private HotelConversionService conversionService;
     @InjectMocks
     private HotelsService service;
+    private HotelEntity entity;
+    private Hotel hotel;
+    @BeforeEach
+    public void setup() {
+        entity = HotelEntity.builder()
+                .id(0)
+                .name("name")
+                .rating(0)
+                .category("category")
+                .locationEntity(new LocationEntity(0, "city", "state", "country", 0, "address", new ArrayList<>()))
+                .imageUrl("url")
+                .reputation(0)
+                .reputationBadge("red")
+                .price(0)
+                .availability(0)
+                .build();
+        hotel = Hotel.builder()
+                .id(0)
+                .name("name")
+                .rating(0)
+                .category("category")
+                .location(new Location(0, "city", "state", "country", 0, "address"))
+                .imageUrl("url")
+                .reputation(0)
+                .reputationBadge("red")
+                .price(0)
+                .availability(0)
+                .build();
+    }
 
     @Test
     @DisplayName("Service should throw the NoSuchHotelFoundException exception")
@@ -47,31 +77,8 @@ class HotelsServiceTest {
     @DisplayName("Service should return Hotel object")
     void getExistingHotel() {
         int id = 1;
-        HotelEntity entity = HotelEntity.builder()
-                .id(id)
-                .name("name")
-                .rating(0)
-                .category("category")
-                .locationEntity(new LocationEntity(0, "city", "state", "country", 0, "address", new ArrayList<>()))
-                .imageUrl("url")
-                .reputation(0)
-                .reputationBadge("red")
-                .price(0)
-                .availability(0)
-                .build();
-        Hotel hotel = Hotel.builder()
-                .id(id)
-                .name("name")
-                .rating(0)
-                .category("category")
-                .location(new Location(0, "city", "state", "country", 0, "address"))
-                .imageUrl("url")
-                .reputation(0)
-                .reputationBadge("red")
-                .price(0)
-                .availability(0)
-                .build();
-
+        entity.setId(id);
+        hotel.setId(id);
         when(repository.getById(id)).thenReturn(entity);
         when(mapper.toModel(entity)).thenReturn(hotel);
         assertEquals(service.getHotel(id), hotel);
@@ -82,19 +89,8 @@ class HotelsServiceTest {
     void bookFullBookedHotel() {
         Assertions.assertThrows(AvailabilityIsZeroException.class, () -> {
             int id = 1;
-            int availability = 0;
-            HotelEntity entity = HotelEntity.builder()
-                    .id(id)
-                    .name("name")
-                    .rating(0)
-                    .category("category")
-                    .locationEntity(new LocationEntity(0, "city", "state", "country", 0, "address", new ArrayList<>()))
-                    .imageUrl("url")
-                    .reputation(0)
-                    .reputationBadge("red")
-                    .price(0)
-                    .availability(availability)
-                    .build();
+            entity.setId(id);
+            entity.setAvailability(0);
             when(repository.getById(id)).thenReturn(entity);
             service.bookHotel(id);
         });
@@ -104,19 +100,8 @@ class HotelsServiceTest {
     @DisplayName("Service should throw the AvailabilityIsZeroException exception")
     void bookHotelSuccess() {
         int id = 1;
-        int availability = 1;
-        HotelEntity entity = HotelEntity.builder()
-                .id(id)
-                .name("name")
-                .rating(0)
-                .category("category")
-                .locationEntity(new LocationEntity(0, "city", "state", "country", 0, "address", new ArrayList<>()))
-                .imageUrl("url")
-                .reputation(0)
-                .reputationBadge("red")
-                .price(0)
-                .availability(availability)
-                .build();
+        entity.setId(id);
+        entity.setAvailability(1);
         when(repository.getById(id)).thenReturn(entity);
         service.bookHotel(id);
         assertEquals(entity.getAvailability(), 0);

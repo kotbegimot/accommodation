@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class LocationMapperTest {
     @Autowired
-    LocationMapper mapper;
+    private LocationMapper mapper;
 
     @Test
     @DisplayName("Service should return correct Location object")
@@ -22,12 +22,7 @@ class LocationMapperTest {
         LocationEntity locationEntity = new LocationEntity(2, "city", "state",
                 "country", 480011, "address", new ArrayList<>());
         Location locationModel = mapper.toModel(locationEntity);
-        assertEquals(locationEntity.getId(), locationModel.getId());
-        assertEquals(locationEntity.getCity(), locationModel.getCity());
-        assertEquals(locationEntity.getState(), locationModel.getState());
-        assertEquals(locationEntity.getCountry(), locationModel.getCountry());
-        assertEquals(locationEntity.getZipCode(), locationModel.getZipCode());
-        assertEquals(locationEntity.getAddress(), locationModel.getAddress());
+        assertModelEqualsEntity(locationModel, locationEntity);
     }
 
     @Test
@@ -36,11 +31,15 @@ class LocationMapperTest {
         Location locationModel = new Location(2, "city", "state",
                 "country", 480011, "address");
         LocationEntity locationEntity = mapper.toEntity(locationModel);
-        assertEquals(locationEntity.getId(), locationModel.getId());
-        assertEquals(locationEntity.getCity(), locationModel.getCity());
-        assertEquals(locationEntity.getState(), locationModel.getState());
-        assertEquals(locationEntity.getCountry(), locationModel.getCountry());
-        assertEquals(locationEntity.getZipCode(), locationModel.getZipCode());
-        assertEquals(locationEntity.getAddress(), locationModel.getAddress());
+        assertModelEqualsEntity(locationModel, locationEntity);
+    }
+
+    private void assertModelEqualsEntity(Location model, LocationEntity entity) {
+        assertEquals(entity.getId(), model.getId());
+        assertEquals(entity.getCity(), model.getCity());
+        assertEquals(entity.getState(), model.getState());
+        assertEquals(entity.getCountry(), model.getCountry());
+        assertEquals(entity.getZipCode(), model.getZipCode());
+        assertEquals(entity.getAddress(), model.getAddress());
     }
 }
