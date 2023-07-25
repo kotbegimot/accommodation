@@ -19,17 +19,17 @@ public class HotelRepository {
     private final EntityManager entityManager;
 
 
-    public List<HotelEntity> getAll() {
+    public List<HotelEntity> getAllHotels() {
         return entityManager.createQuery("FROM HotelEntity", HotelEntity.class).getResultList();
     }
 
     @Cacheable()
-    public HotelEntity getById(int id) {
+    public HotelEntity getHotelById(int id) {
         return entityManager.find(HotelEntity.class, id);
     }
 
     @Transactional
-    public void create(HotelEntity hotel) {
+    public void createHotel(HotelEntity hotel) {
         entityManager.persist(hotel);
     }
 

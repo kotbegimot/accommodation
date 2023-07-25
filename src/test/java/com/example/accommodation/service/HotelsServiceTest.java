@@ -73,10 +73,10 @@ class HotelsServiceTest {
     @Test
     @DisplayName("Service should return list of Hotel objects")
     void getAllHotels() {
-        when(repository.getAll()).thenReturn(entityList);
+        when(repository.getAllHotels()).thenReturn(entityList);
         when(mapper.toModels(entityList)).thenReturn(modelList);
         assertEquals(service.getAllHotels(), modelList);
-        verify(repository, times(1)).getAll();
+        verify(repository, times(1)).getAllHotels();
         verify(mapper, times(1)).toModels(entityList);
     }
     @Test
@@ -84,9 +84,9 @@ class HotelsServiceTest {
     void getUnexistingHotel() {
         Assertions.assertThrows(NoSuchHotelFoundException.class, () -> {
             int id = 1;
-            when(repository.getById(id)).thenReturn(null);
+            when(repository.getHotelById(id)).thenReturn(null);
             service.getHotel(id);
-            verify(repository, times(1)).getById(id);
+            verify(repository, times(1)).getHotelById(id);
         });
     }
 
@@ -96,10 +96,10 @@ class HotelsServiceTest {
         int id = 1;
         entity.setId(id);
         hotel.setId(id);
-        when(repository.getById(id)).thenReturn(entity);
+        when(repository.getHotelById(id)).thenReturn(entity);
         when(mapper.toModel(entity)).thenReturn(hotel);
         assertEquals(service.getHotel(id), hotel);
-        verify(repository, times(1)).getById(id);
+        verify(repository, times(1)).getHotelById(id);
     }
     @Test
     @DisplayName("Service should throw the InvalidRequestException exception")
@@ -117,7 +117,7 @@ class HotelsServiceTest {
         when(conversionService.convert(hotel)).thenReturn(hotel);
         when(mapper.toEntity(hotel)).thenReturn(entity);
         service.createHotel(hotel);
-        verify(repository, times(1)).create(entity);
+        verify(repository, times(1)).createHotel(entity);
     }
 
     @Test
@@ -125,9 +125,9 @@ class HotelsServiceTest {
     void updateUnexistingHotel() {
         Assertions.assertThrows(NoSuchHotelFoundException.class, () -> {
             hotel.setId(1);
-            when(repository.getById(hotel.getId())).thenReturn(null);
+            when(repository.getHotelById(hotel.getId())).thenReturn(null);
             service.updateHotel(hotel);
-            verify(repository, times(1)).getById(hotel.getId());
+            verify(repository, times(1)).getHotelById(hotel.getId());
         });
     }
 
@@ -135,14 +135,14 @@ class HotelsServiceTest {
     @DisplayName("Service should execute hotel updating")
     void updateExistingHotel() {
         hotel.setId(1);
-        when(repository.getById(hotel.getId())).thenReturn(entity);
+        when(repository.getHotelById(hotel.getId())).thenReturn(entity);
         doNothing().when(validationService).validate(hotel);
         when(conversionService.convert(hotel)).thenReturn(hotel);
         when(mapper.toEntity(hotel)).thenReturn(entity);
         when(mapper.toModel(entity)).thenReturn(hotel);
         when(repository.updateHotel(entity)).thenReturn(entity);
         service.updateHotel(hotel);
-        verify(repository, times(1)).getById(hotel.getId());
+        verify(repository, times(1)).getHotelById(hotel.getId());
         verify(repository, times(1)).updateHotel(entity);
     }
 
@@ -153,7 +153,7 @@ class HotelsServiceTest {
             int id = 1;
             entity.setId(id);
             entity.setAvailability(0);
-            when(repository.getById(id)).thenReturn(entity);
+            when(repository.getHotelById(id)).thenReturn(entity);
             service.bookHotel(id);
         });
     }
@@ -164,7 +164,7 @@ class HotelsServiceTest {
         int id = 1;
         entity.setId(id);
         entity.setAvailability(1);
-        when(repository.getById(id)).thenReturn(entity);
+        when(repository.getHotelById(id)).thenReturn(entity);
         service.bookHotel(id);
         assertEquals(entity.getAvailability(), 0);
     }
@@ -173,10 +173,10 @@ class HotelsServiceTest {
     @DisplayName("Service should execute hotel deletion")
     void deleteHotelExecuted() {
         int id = 1;
-        when(repository.getById(id)).thenReturn(entity);
+        when(repository.getHotelById(id)).thenReturn(entity);
         service.deleteHotel(id);
         verify(repository, times(1)).deleteHotel(id);
-        verify(repository, times(1)).getById(id);
+        verify(repository, times(1)).getHotelById(id);
     }
 
     @Test

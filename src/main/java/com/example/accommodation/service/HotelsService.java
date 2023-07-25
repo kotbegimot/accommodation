@@ -22,7 +22,7 @@ public class HotelsService {
     private final HotelValidationService validationService;
     private final HotelConversionService conversionService;
     private HotelEntity checkEntityById(int id) throws NoSuchHotelFoundException {
-        HotelEntity entity = repository.getById(id);
+        HotelEntity entity = repository.getHotelById(id);
         if (entity == null) {
             throw new NoSuchHotelFoundException(id);
         }
@@ -30,7 +30,7 @@ public class HotelsService {
     }
 
     public List<Hotel> getAllHotels() {
-        return mapper.toModels(repository.getAll());
+        return mapper.toModels(repository.getAllHotels());
     }
 
     public Hotel getHotel(int id) {
@@ -41,7 +41,7 @@ public class HotelsService {
     public void createHotel(Hotel newHotel) {
         validationService.validate(newHotel);
         newHotel = conversionService.convert(newHotel);
-        repository.create(mapper.toEntity(newHotel));
+        repository.createHotel(mapper.toEntity(newHotel));
     }
 
     public Hotel updateHotel(Hotel updateHotel) {
