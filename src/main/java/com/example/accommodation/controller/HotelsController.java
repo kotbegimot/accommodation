@@ -63,7 +63,7 @@ public class HotelsController {
      * @param newHotel - hotel object
      */
     @PostMapping("/create")
-    @ResponseBody
+    @ResponseStatus(value = HttpStatus.OK)
     public void createHotel (@RequestBody Hotel newHotel) {
         service.createHotel(newHotel);
     }
@@ -99,6 +99,7 @@ public class HotelsController {
      * @param id - hotel ID
      */
     @DeleteMapping("/delete/{id}")
+    @ResponseStatus(value = HttpStatus.OK)
     public void deleteHotel(@PathVariable int id) {
         service.deleteHotel(id);
     }

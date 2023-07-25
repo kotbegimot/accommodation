@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder=true)
 public class Hotel {
     @JsonProperty("id")
     int id;
