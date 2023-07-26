@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +42,7 @@ public class LocationEntity {
     @OneToMany(mappedBy = "locationEntity",
             orphanRemoval = true)
     @Cascade(CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<HotelEntity> hotels = new ArrayList<>();
     @Override
     public String toString() {

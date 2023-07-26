@@ -1,11 +1,15 @@
 package com.example.accommodation.service;
 
 import com.example.accommodation.entity.HotelEntity;
+import com.example.accommodation.entity.LocationEntity;
 import com.example.accommodation.mapper.HotelMapper;
+import com.example.accommodation.mapper.LocationMapper;
 import com.example.accommodation.model.Hotel;
+import com.example.accommodation.model.Location;
 import com.example.accommodation.model.exceptions.AvailabilityIsZeroException;
 import com.example.accommodation.model.exceptions.NoSuchHotelFoundException;
 import com.example.accommodation.repository.HotelRepository;
+import com.example.accommodation.repository.LocationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,62 +21,114 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class HotelsService {
-    private final HotelRepository repository;
-    private final HotelMapper mapper;
+    private final HotelRepository hotelRepository;
+    private final LocationRepository locationRepository;
+    private final HotelMapper hotelMapper;
+    private final LocationMapper locationMapper;
     private final HotelValidationService validationService;
     private final HotelConversionService conversionService;
-    private HotelEntity checkEntityById(int id) throws NoSuchHotelFoundException {
-        HotelEntity entity = repository.getHotelById(id);
+    private HotelEntity checkHotelEntityById(int id) throws NoSuchHotelFoundException {
+        HotelEntity entity = hotelRepository.getHotelById(id);
         if (entity == null) {
             throw new NoSuchHotelFoundException(id);
         }
         return entity;
     }
 
+    private LocationEntity findLocationEntity(Location model) {
+        LocationEntity entity = null;
+        if (model.getAddress() != null) {
+            List<LocationEntity> locations = locationRepository.getLocationsByAddress(model.getAddress());
+               for (LocationEntity location : locations) {
+                if (model.equals(locationMapper.toModel(location))) {
+                    entity = location;
+                    break;
+                }
+            }
+        }
+        return entity;
+    }
+
+    /**
+     * Checks location existence in repository
+     * @param model - location from request
+     * @return null if location is not found
+     *         LocationEntity object of the found location
+     */
+    private LocationEntity checkLocationEntityExistence(Location model) {
+        LocationEntity entity;
+        if (model.getId() != 0) {
+            entity = locationRepository.getLocationById(model.getId());
+        } else {
+            entity = findLocationEntity(model);
+        }
+        return entity;
+    }
+
+    private LocationEntity createLocationEntity(Location model) {
+        model.setId(0);
+        locationRepository.createLocation(locationMapper.toEntity(model));
+        return findLocationEntity(model);
+    }
+
+    private LocationEntity getLocationEntity(Location locationModel) {
+        // check location existence
+        LocationEntity locationEntity = checkLocationEntityExistence(locationModel);
+        // create location if it doesn't exist
+        if (locationEntity == null) {
+            locationEntity = createLocationEntity(locationModel);
+        }
+        return locationEntity;
+    }
+
     public List<Hotel> getAllHotels() {
-        return mapper.toModels(repository.getAllHotels());
+        return hotelMapper.toModels(hotelRepository.getAllHotels());
     }
 
     public Hotel getHotel(int id) {
-        HotelEntity entity = checkEntityById(id);
-        return mapper.toModel(entity);
+        HotelEntity entity = checkHotelEntityById(id);
+        return hotelMapper.toModel(entity);
     }
 
     public void createHotel(Hotel newHotel) {
         validationService.validate(newHotel);
         newHotel = conversionService.convert(newHotel);
-        repository.createHotel(mapper.toEntity(newHotel));
+        HotelEntity entity = hotelMapper.toEntity(newHotel);
+        entity.setLocationEntity(getLocationEntity(newHotel.getLocation()));
+        hotelRepository.createHotel(entity);
     }
 
     public Hotel updateHotel(Hotel updateHotel) {
-        checkEntityById(updateHotel.getId());
+        checkHotelEntityById(updateHotel.getId());
         validationService.validate(updateHotel);
         updateHotel = conversionService.convert(updateHotel);
-        return mapper.toModel(repository.updateHotel(mapper.toEntity(updateHotel)));
+        HotelEntity entity = hotelMapper.toEntity(updateHotel);
+        entity.setLocationEntity(getLocationEntity(updateHotel.getLocation()));
+        return hotelMapper.toModel(hotelRepository.updateHotel(entity));
     }
 
     public Hotel bookHotel(int id) throws AvailabilityIsZeroException {
-        HotelEntity entity = checkEntityById(id);
+        HotelEntity entity = checkHotelEntityById(id);
         if (entity.getAvailability() < 1) {
             throw new AvailabilityIsZeroException(id);
         }
         entity.setAvailability(entity.getAvailability() - 1);
-        return mapper.toModel(repository.updateHotel(entity));
+        return hotelMapper.toModel(hotelRepository.updateHotel(entity));
     }
 
     public void deleteHotel(int id) {
-        checkEntityById(id);
-        repository.deleteHotel(id);
+        checkHotelEntityById(id);
+        hotelRepository.deleteHotel(id);
     }
     public List<Hotel> getHotelsByRating(int rating) {
-        return mapper.toModels(repository.getHotelsByRating(rating));
+        return hotelMapper.toModels(hotelRepository.getHotelsByRating(rating));
     }
 
     public List<Hotel> getHotelsByLocation(String location) {
-        return mapper.toModels(repository.getHotelsByLocation(location));
+        return hotelMapper.toModels(hotelRepository.getHotelsByLocation(location));
     }
 
     public List<Hotel> getHotelsByBadge(String reputationBadge) {
-        return mapper.toModels(repository.getHotelsByBadge(reputationBadge));
+        return hotelMapper.toModels(hotelRepository.getHotelsByBadge(reputationBadge));
     }
 }

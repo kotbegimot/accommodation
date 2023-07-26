@@ -18,8 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.accommodation.util.Globals.BASE_URL;
-import static com.example.accommodation.util.Globals.toJsonString;
+import static com.example.accommodation.util.Globals.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.*;

@@ -37,9 +37,9 @@ public class LocationRepository {
         entityManager.remove(deletingLocation);
     }
 
-    public List<LocationEntity> getLocationsByCity(int reputation) {
+    public List<LocationEntity> getLocationsByAddress(String address) {
         return entityManager
-                .createQuery(String.format("From LocationEntity WHERE city=%s", reputation),
+                .createQuery("From LocationEntity WHERE address = \"%s\"".formatted(address),
                         LocationEntity.class)
                 .getResultList();
     }

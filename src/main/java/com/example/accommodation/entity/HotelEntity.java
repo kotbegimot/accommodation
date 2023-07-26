@@ -29,7 +29,7 @@ public class HotelEntity {
     private String category;
 
     @ManyToOne()
-    @Cascade(CascadeType.PERSIST)
+    @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name="location_id")
     private LocationEntity locationEntity;
 
