@@ -28,10 +28,13 @@ public class HotelsService {
     private final HotelValidationService validationService;
     private final HotelConversionService conversionService;
     private HotelEntity checkHotelEntityById(int id) throws NoSuchHotelFoundException {
+        System.out.println("!!!!!!!! checkHotelEntityById !!!!!!!!!!");
         HotelEntity entity = hotelRepository.getHotelById(id);
         if (entity == null) {
+            System.out.println("!!!!!!!! checkHotelEntityById  null!!!!!!!!!!");
             throw new NoSuchHotelFoundException(id);
         }
+        System.out.println("!!!!!!!! checkHotelEntityById  return!!!!!!!!!!");
         return entity;
     }
 
@@ -86,6 +89,7 @@ public class HotelsService {
     }
 
     public Hotel getHotel(int id) {
+        System.out.println("!!!!!!!! getHotel !!!!!!!!!!");
         HotelEntity entity = checkHotelEntityById(id);
         return hotelMapper.toModel(entity);
     }

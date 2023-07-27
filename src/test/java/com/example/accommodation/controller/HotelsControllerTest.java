@@ -2,7 +2,9 @@ package com.example.accommodation.controller;
 
 import com.example.accommodation.model.Hotel;
 import com.example.accommodation.model.Location;
-import com.example.accommodation.repository.HotelRepository;
+import com.example.accommodation.model.exceptions.AvailabilityIsZeroException;
+import com.example.accommodation.model.exceptions.InvalidRequestException;
+import com.example.accommodation.model.exceptions.NoSuchHotelFoundException;
 import com.example.accommodation.service.HotelsService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +22,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.accommodation.util.Globals.*;
+import static com.example.accommodation.util.Globals.BASE_URL;
+import static com.example.accommodation.util.Globals.toJsonString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.*;
@@ -33,11 +36,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class HotelsControllerTest {
     @Autowired
     private MockMvc mvc;
-
     @MockBean
     private HotelsService service;
-    @MockBean
-    private HotelRepository hotelRepository;
 
     private List<Hotel> hotels;
 
@@ -233,5 +233,49 @@ class HotelsControllerTest {
                 .andExpect(header().string("Allow", "%s,%s"
                         .formatted(HttpMethod.PATCH, HttpMethod.OPTIONS)))
                 .andExpect(jsonPath("$").doesNotExist());
+    }
+
+    @Test
+    @DisplayName("Should return 404")
+    @WithMockUser
+    public void hotelIdNotFoundTest() throws Exception {
+        int id = 100;
+        when(service.getHotel(id)).thenThrow(NoSuchHotelFoundException.class);
+        mvc.perform(get(BASE_URL + "/%d".formatted(id))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$").doesNotExist());
+        verify(service, times(1)).getHotel(id);
+    }
+
+    @Test
+    @DisplayName("Should return 405")
+    @WithMockUser
+    public void bookingNotAllowedTest() throws Exception {
+        int id = 100;
+        when(service.bookHotel(id)).thenThrow(AvailabilityIsZeroException.class);
+        mvc.perform(patch(BASE_URL + "/book/%d".formatted(id))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isMethodNotAllowed())
+                .andExpect(jsonPath("$").doesNotExist());
+        verify(service, times(1)).bookHotel(id);
+    }
+
+    @Test
+    @DisplayName("Should return 400")
+    @WithMockUser
+    public void invalidCreateRequestTest() throws Exception {
+        int id = 100;
+        doThrow(InvalidRequestException.class).when(service).createHotel(hotelRequest);
+        mvc.perform(post(BASE_URL)
+                        .content(toJsonString(hotelRequest))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$").doesNotExist());
+        verify(service, times(1)).createHotel(hotelRequest);
     }
 }
