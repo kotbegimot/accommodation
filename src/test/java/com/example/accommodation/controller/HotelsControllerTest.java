@@ -2,6 +2,7 @@ package com.example.accommodation.controller;
 
 import com.example.accommodation.model.Hotel;
 import com.example.accommodation.model.Location;
+import com.example.accommodation.repository.HotelRepository;
 import com.example.accommodation.service.HotelsService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -34,6 +36,8 @@ class HotelsControllerTest {
 
     @MockBean
     private HotelsService service;
+    @MockBean
+    private HotelRepository hotelRepository;
 
     private List<Hotel> hotels;
 
@@ -96,30 +100,54 @@ class HotelsControllerTest {
     @WithMockUser
     public void createHotelTest() throws Exception {
         doNothing().when(service).createHotel(hotelRequest);
-        mvc.perform(post(BASE_URL + "/create")
+        mvc.perform(post(BASE_URL)
                         .content(toJsonString(hotelRequest))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$").doesNotExist());
         verify(service, times(1)).createHotel(hotelRequest);
     }
 
 
     @Test
-    @DisplayName("Should call hotel updating")
+    @DisplayName("Should call hotel updating and return 200")
     @WithMockUser
     public void updateHotelTest() throws Exception {
         int id = 4;
         hotelRequest.setId(id);
+        when(service.isLocationExist(hotelRequest.getLocation())).thenReturn(true);
         when(service.updateHotel(hotelRequest)).thenReturn(hotelRequest);
-        mvc.perform(put(BASE_URL + "/update/%d".formatted(id))
+        mvc.perform(put(BASE_URL + "/%d".formatted(id))
                     .content(toJsonString(hotelRequest))
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(jsonPath("$", notNullValue()))
+                .andExpect(jsonPath("$.id", is(id)))
+                .andExpect(jsonPath("$.name", is(hotelRequest.getName())))
+                .andExpect(jsonPath("$.rating", is(hotelRequest.getRating())))
+                .andExpect(jsonPath("$.reputationBadge", is(hotelRequest.getReputationBadge())));
+        verify(service, times(1)).updateHotel(hotelRequest);
+    }
+
+    @Test
+    @DisplayName("Should call hotel updating and return 201")
+    @WithMockUser
+    public void updateHotelWithReplaceTest() throws Exception {
+        int id = 4;
+        hotelRequest.setId(id);
+        when(service.isLocationExist(hotelRequest.getLocation())).thenReturn(false);
+        when(service.updateHotel(hotelRequest)).thenReturn(hotelRequest);
+        mvc.perform(put(BASE_URL + "/%d".formatted(id))
+                        .content(toJsonString(hotelRequest))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$", notNullValue()))
                 .andExpect(jsonPath("$.id", is(id)))
@@ -137,7 +165,7 @@ class HotelsControllerTest {
         hotelRequest.setId(id);
         Hotel bookedHotel = hotelRequest.toBuilder().availability(hotelRequest.getAvailability()-1).build();
         when(service.bookHotel(id)).thenReturn(bookedHotel);
-        mvc.perform(put(BASE_URL + "/book/%d".formatted(id)))
+        mvc.perform(patch(BASE_URL + "/book/%d".formatted(id)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
@@ -156,10 +184,54 @@ class HotelsControllerTest {
     public void deleteHotelTest() throws Exception {
         int id = 1;
         doNothing().when(service).deleteHotel(id);
-        mvc.perform(delete(BASE_URL + "/delete/{id}", id))
+        mvc.perform(delete(BASE_URL + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").doesNotExist());
         verify(service, times(1)).deleteHotel(id);
+    }
+
+    @Test
+    @DisplayName("Should return correct options")
+    @WithMockUser
+    public void optionsAllHotelsTest() throws Exception {
+        mvc.perform(options(BASE_URL)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(header().exists("allow"))
+                .andExpect(header().string("Allow", "%s,%s,%s"
+                        .formatted(HttpMethod.GET, HttpMethod.POST, HttpMethod.OPTIONS)))
+                .andExpect(jsonPath("$").doesNotExist());
+    }
+
+    @Test
+    @DisplayName("Should return correct options")
+    @WithMockUser
+    public void optionsHotelByIdTest() throws Exception {
+        int id = 2;
+        mvc.perform(options(BASE_URL + "/%d".formatted(id))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(header().exists("allow"))
+                .andExpect(header().string("Allow", "%s,%s,%s,%s"
+                        .formatted(HttpMethod.GET, HttpMethod.DELETE, HttpMethod.PUT, HttpMethod.OPTIONS)))
+                .andExpect(jsonPath("$").doesNotExist());
+    }
+
+    @Test
+    @DisplayName("Should return correct options")
+    @WithMockUser
+    public void optionsHotelBookingTest() throws Exception {
+        int id = 2;
+        mvc.perform(options(BASE_URL + "/book/%d".formatted(id))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(header().exists("allow"))
+                .andExpect(header().string("Allow", "%s,%s"
+                        .formatted(HttpMethod.PATCH, HttpMethod.OPTIONS)))
+                .andExpect(jsonPath("$").doesNotExist());
     }
 }

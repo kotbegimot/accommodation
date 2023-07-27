@@ -98,6 +98,10 @@ public class HotelsService {
         hotelRepository.createHotel(entity);
     }
 
+    public boolean isLocationExist(Location locationModel) {
+        return (checkLocationEntityExistence(locationModel) != null);
+    }
+
     public Hotel updateHotel(Hotel updateHotel) {
         checkHotelEntityById(updateHotel.getId());
         validationService.validate(updateHotel);

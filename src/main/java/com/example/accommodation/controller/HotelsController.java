@@ -7,6 +7,7 @@ import com.example.accommodation.model.exceptions.InvalidRequestException;
 import com.example.accommodation.model.exceptions.NoSuchHotelFoundException;
 import com.example.accommodation.service.HotelsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +48,19 @@ public class HotelsController {
     }
 
     /**
+     * OPTIONS request for collection
+     * @return OK status with communication options for the target resource
+     */
+    @RequestMapping(value="", method = RequestMethod.OPTIONS)
+    ResponseEntity<?> collectionOptions()
+    {
+        return ResponseEntity
+                .ok()
+                .allow(HttpMethod.GET, HttpMethod.POST, HttpMethod.OPTIONS)
+                .build();
+    }
+
+    /**
      * GET request that returns accommodation by ID.
      * @param id - hotel ID
      * @return hotel object
@@ -58,12 +72,25 @@ public class HotelsController {
     }
 
     /**
+     * OPTIONS request for single entity
+     * @return OK status with communication options for the target resource
+     */
+    @RequestMapping(value="/{id}", method = RequestMethod.OPTIONS)
+    ResponseEntity<?> singleRequestOptions()
+    {
+        return ResponseEntity
+                .ok()
+                .allow(HttpMethod.GET, HttpMethod.DELETE, HttpMethod.PUT, HttpMethod.OPTIONS)
+                .build();
+    }
+
+    /**
      * Creates new hotel entity
      * Validates fields of hotel object from request
      * @param newHotel - hotel object
      */
-    @PostMapping("/create")
-    @ResponseStatus(value = HttpStatus.OK)
+    @PostMapping("")
+    @ResponseStatus(value = HttpStatus.CREATED)
     public void createHotel (@RequestBody Hotel newHotel) {
         service.createHotel(newHotel);
     }
@@ -75,30 +102,49 @@ public class HotelsController {
      * Note: it is strongly recommended to provide all fields (See README.md)
      * @return updated hotel object.
      */
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     @ResponseBody
-    public Hotel updateHotel (@PathVariable int id, @RequestBody Hotel updateHotel) {
+    public ResponseEntity<Hotel> updateHotel (@PathVariable int id, @RequestBody Hotel updateHotel) {
         updateHotel.setId(id);
-        return service.updateHotel(updateHotel);
+        if (service.isLocationExist(updateHotel.getLocation())) {
+            return ResponseEntity.status(HttpStatus.OK).body(service.updateHotel(updateHotel));
+        } else {
+            return ResponseEntity.status(HttpStatus.CREATED).body(service.updateHotel(updateHotel));
+        }
     }
 
     /**
-     * PUT method for hotel booking.
+     * PATCH method for hotel booking.
      * As the result of using this endpoint, availability of the hotel will be decremented.
      * @param id - id of the hotel to book
      * @return hotel object.
      */
-    @PutMapping("/book/{id}")
+    @PatchMapping("/book/{id}")
     @ResponseBody
     public Hotel bookHotel (@PathVariable int id) {
         return service.bookHotel(id);
     }
 
     /**
+     * OPTIONS request for entity booking
+     * @return OK status with communication options for the target resource
+     */
+    @RequestMapping(value="/book/{id}", method = RequestMethod.OPTIONS)
+    ResponseEntity<?> bookingOptions()
+    {
+        return ResponseEntity
+                .ok()
+                .allow(HttpMethod.PATCH, HttpMethod.OPTIONS)
+                .build();
+    }
+
+
+
+    /**
      * DELETE request that removes accommodation by ID.
      * @param id - hotel ID
      */
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(value = HttpStatus.OK)
     public void deleteHotel(@PathVariable int id) {
         service.deleteHotel(id);
