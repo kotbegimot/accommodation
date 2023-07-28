@@ -13,10 +13,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,17 +21,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 class HotelsServiceTest {
-    @Mock
-    private HotelRepository hotelRepository;
-    @Mock
-    private LocationRepository locationRepository;
-    @Mock
-    private HotelValidationService validationService;
-    @Mock
-    private HotelConversionService conversionService;
-    @InjectMocks
+    private final HotelRepository hotelRepository = mock(HotelRepository.class);
+
+    private final LocationRepository locationRepository = mock(LocationRepository.class);
+
+    private final HotelValidationService validationService = mock(HotelValidationService.class);
+
+    private final HotelConversionService conversionService = mock(HotelConversionService.class);
+
     private HotelsService service;
     private HotelEntity entity;
     private Hotel hotel;
@@ -43,6 +37,7 @@ class HotelsServiceTest {
     private List<Hotel> modelList;
     @BeforeEach
     public void setup() {
+        service = new HotelsService(hotelRepository, locationRepository, validationService, conversionService);
         entity = HotelEntity.builder()
                 .id(0)
                 .name("name")

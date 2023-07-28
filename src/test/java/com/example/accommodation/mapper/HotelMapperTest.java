@@ -8,26 +8,21 @@ import com.example.accommodation.util.HotelMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ExtendWith(MockitoExtension.class)
 class HotelMapperTest {
-    private Location locationModel;
-    private LocationEntity locationEntity;
     private HotelEntity hotelEntity;
     private Hotel hotelModel;
 
     @BeforeEach
     public void setup() {
-        locationModel = new Location(2, "city", "state",
+        Location locationModel = new Location(2, "city", "state",
                 "country", 480011, "address");
-        locationEntity = new LocationEntity(2, "city", "state",
+        LocationEntity locationEntity = new LocationEntity(2, "city", "state",
                 "country", 480011, "address", new ArrayList<>());
         hotelEntity = HotelEntity.builder()
                 .id(1)

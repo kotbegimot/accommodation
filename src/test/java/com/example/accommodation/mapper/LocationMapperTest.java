@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 class LocationMapperTest {
-
     @Test
     @DisplayName("Mapper should return correct Location object")
     void mapEntityToModel() {

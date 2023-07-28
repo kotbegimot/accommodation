@@ -7,21 +7,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class HotelConversionServiceTest {
-    @Mock
-    private ValidationProperties properties;
-    @InjectMocks
+    private final ValidationProperties properties = mock(ValidationProperties.class);
     private HotelConversionService service;
     private Hotel hotel;
     @BeforeEach
     public void setup() {
+        service = new HotelConversionService(properties);
         hotel = Hotel.builder()
                 .id(0)
                 .name("name")
