@@ -44,15 +44,4 @@ public class LocationEntity {
     @Cascade(CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<HotelEntity> hotels = new ArrayList<>();
-    @Override
-    public String toString() {
-        return "LocationEntity{" +
-                "id=" + id +
-                ", city='" + city + '\'' +
-                ", state='" + state + '\'' +
-                ", country='" + country + '\'' +
-                ", zip_code='" + zipCode + '\'' +
-                ", address='" + address + '\'' +
-                '}';
-    }
 }

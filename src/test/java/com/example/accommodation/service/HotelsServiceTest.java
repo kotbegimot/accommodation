@@ -14,8 +14,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -39,8 +37,6 @@ class HotelsServiceTest {
     private HotelConversionService conversionService;
     @InjectMocks
     private HotelsService service;
-    @Captor
-    ArgumentCaptor<Integer> argCaptor;
     private HotelEntity entity;
     private Hotel hotel;
     private List<HotelEntity> entityList;
@@ -139,17 +135,36 @@ class HotelsServiceTest {
         List<LocationEntity> locations = List.of(entity.getLocationEntity());
         doNothing().when(validationService).validate(hotel);
         when(conversionService.convert(hotel)).thenReturn(hotel);
-        when(locationRepository.getLocationById(hotel.getLocation().getId())).thenReturn(null);
+        when(locationRepository.getLocationById(1)).thenReturn(null);
         doNothing().when(locationRepository).createLocation(newLocationEntity);
-        //when(locationRepository.getLocationById(hotel.getLocation().getId())).thenReturn(entity.getLocationEntity());
         when(locationRepository.getLocationsByAddress(hotel.getLocation().getAddress())).thenReturn(locations);
 
         service.createHotel(hotel);
 
-        verify(hotelRepository, times(1)).createHotel(entity);
+        verify(validationService, times(1)).validate(hotel);
+        verify(conversionService, times(1)).convert(hotel);
+        verify(locationRepository, times(1)).getLocationById(1);
         verify(locationRepository, times(1)).createLocation(newLocationEntity);
-        //verify(locationRepository, times(2)).getLocationById(argCaptor.capture());
-        //assertEquals(Arrays.asList(1, 0), argCaptor.getAllValues());
+        verify(locationRepository, times(1)).getLocationsByAddress(hotel.getLocation().getAddress());
+        verify(hotelRepository, times(1)).createHotel(entity);
+    }
+
+    @Test
+    @DisplayName("Service should execute hotel creation")
+    void createHotelLocationIsFindedByNameTest() {
+        hotel.getLocation().setId(0);
+        List<LocationEntity> locations = List.of(entity.getLocationEntity());
+        doNothing().when(validationService).validate(hotel);
+        when(conversionService.convert(hotel)).thenReturn(hotel);
+        when(locationRepository.getLocationsByAddress(hotel.getLocation().getAddress())).thenReturn(locations);
+
+        service.createHotel(hotel);
+
+        verify(validationService, times(1)).validate(hotel);
+        verify(conversionService, times(1)).convert(hotel);
+        verify(locationRepository, times(0)).getLocationById(0);
+        verify(locationRepository, times(1)).getLocationsByAddress(hotel.getLocation().getAddress());
+        verify(hotelRepository, times(1)).createHotel(entity);
     }
 
     @Test

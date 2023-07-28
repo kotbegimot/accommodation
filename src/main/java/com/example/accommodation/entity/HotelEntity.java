@@ -47,20 +47,4 @@ public class HotelEntity {
 
     @Column(name="availability")
     private int availability;
-
-    @Override
-    public String toString() {
-        return "Hotel{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", rating=" + rating +
-                ", category='" + category + '\'' +
-                ", location_id=" + locationEntity.toString() +
-                ", imageUrl='" + imageUrl + '\'' +
-                ", reputation=" + reputation +
-                ", reputationBadge='" + reputationBadge + '\'' +
-                ", price=" + price +
-                ", availability=" + availability +
-                '}';
-    }
 }
