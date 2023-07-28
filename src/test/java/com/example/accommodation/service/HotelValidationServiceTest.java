@@ -42,7 +42,7 @@ class HotelValidationServiceTest {
 
     @Test
     @DisplayName("Service should throw the Invalid Request exception")
-    void hotelNameIsShort() {
+    void hotelNameIsShortTest() {
         Assertions.assertThrows(InvalidRequestException.class, () -> {
             when(properties.getNameSymbolsMin()).thenReturn(10);
             when(properties.getErrorMsgNameIsShort()).thenReturn("Hotel name is too short");
@@ -53,7 +53,7 @@ class HotelValidationServiceTest {
 
     @Test
     @DisplayName("Service should throw the Invalid Request exception")
-    void hotelNameContainsRestrictedWords() {
+    void hotelNameContainsRestrictedWordsTest() {
         Assertions.assertThrows(InvalidRequestException.class, () -> {
             when(properties.getNameBlackList()).thenReturn(List.of("name","free"));
             when(properties.getErrorMsgNameContainsRestrictedWords()).thenReturn("Hotel name contains restricted words");
@@ -64,7 +64,7 @@ class HotelValidationServiceTest {
 
     @Test
     @DisplayName("Service should throw the Invalid Request exception")
-    void hotelInvalidRating() {
+    void hotelInvalidRatingTest() {
         Assertions.assertThrows(InvalidRequestException.class, () -> {
             hotel.setRating(-1);
             when(properties.getRatingMin()).thenReturn(0);
@@ -77,7 +77,7 @@ class HotelValidationServiceTest {
 
     @Test
     @DisplayName("Service should throw the Invalid Request exception")
-    void hotelInvalidCategory() {
+    void hotelInvalidCategoryTest() {
         Assertions.assertThrows(InvalidRequestException.class, () -> {
             when(properties.getCategoryWhiteList()).thenReturn(List.of("hotel", "alternative", "hostel", "lodge"));
             when(properties.getErrorInvalidCategory()).thenReturn("Hotel category is invalid");
@@ -88,7 +88,7 @@ class HotelValidationServiceTest {
 
     @Test
     @DisplayName("Service should throw the Invalid Request exception")
-    void hotelInvalidImageUrl() {
+    void hotelInvalidImageUrlTest() {
         Assertions.assertThrows(InvalidRequestException.class, () -> {
             when(properties.getErrorImageUrl()).thenReturn("Hotel image url is invalid");
             service.validate(hotel);
@@ -98,7 +98,7 @@ class HotelValidationServiceTest {
 
     @Test
     @DisplayName("Service should throw the Invalid Request exception")
-    void hotelInvalidLocationZipCode() {
+    void hotelInvalidLocationZipCodeTest() {
         Assertions.assertThrows(InvalidRequestException.class, () -> {
             when(properties.getZipCodeLength()).thenReturn(5);
             when(properties.getErrorLocationZipCode()).thenReturn("Hotel zip code is invalid");
@@ -109,7 +109,7 @@ class HotelValidationServiceTest {
 
     @Test
     @DisplayName("Service should throw the Invalid Request exception")
-    void hotelInvalidReputation() {
+    void hotelInvalidReputationTest() {
         Assertions.assertThrows(InvalidRequestException.class, () -> {
             hotel.setReputation(1200);
             when(properties.getReputationMin()).thenReturn(0);
@@ -118,5 +118,11 @@ class HotelValidationServiceTest {
             service.validate(hotel);
             assertEquals(service.getErrorMessage(), properties.getErrorReputation());
         });
+    }
+
+    @Test
+    @DisplayName("Service should return correct error string")
+    void getErrorMessageTest() {
+        assertEquals(service.getErrorMessage(), "");
     }
 }

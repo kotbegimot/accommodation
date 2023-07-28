@@ -5,34 +5,43 @@ import com.example.accommodation.model.Location;
 import com.example.accommodation.util.LocationMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 class LocationMapperTest {
-    @Autowired
-    private LocationMapper mapper;
 
     @Test
-    @DisplayName("Service should return correct Location object")
+    @DisplayName("Mapper should return correct Location object")
     void mapEntityToModel() {
 
         LocationEntity locationEntity = new LocationEntity(2, "city", "state",
                 "country", 480011, "address", new ArrayList<>());
-        Location locationModel = mapper.toModel(locationEntity);
+        Location locationModel = LocationMapper.toModel(locationEntity);
         assertModelEqualsEntity(locationModel, locationEntity);
     }
 
     @Test
-    @DisplayName("Service should return correct LocationEntity object")
+    @DisplayName("Mapper should return null")
+    void mapEntityToModelNull() {
+        assertNull(LocationMapper.toModel(null));
+    }
+
+    @Test
+    @DisplayName("Mapper should return correct LocationEntity object")
     void mapModelToEntity() {
         Location locationModel = new Location(2, "city", "state",
                 "country", 480011, "address");
-        LocationEntity locationEntity = mapper.toEntity(locationModel);
+        LocationEntity locationEntity = LocationMapper.toEntity(locationModel);
         assertModelEqualsEntity(locationModel, locationEntity);
+    }
+
+    @Test
+    @DisplayName("Mapper should return null")
+    void mapModelToEntityNull() {
+        assertNull(LocationMapper.toEntity(null));
     }
 
     private void assertModelEqualsEntity(Location model, LocationEntity entity) {

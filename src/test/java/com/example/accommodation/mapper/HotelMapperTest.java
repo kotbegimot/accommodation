@@ -5,26 +5,19 @@ import com.example.accommodation.entity.LocationEntity;
 import com.example.accommodation.model.Hotel;
 import com.example.accommodation.model.Location;
 import com.example.accommodation.util.HotelMapper;
-import com.example.accommodation.util.LocationMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class HotelMapperTest {
-    @Mock
-    private LocationMapper locationMapper;
-    @InjectMocks
-    private HotelMapper mapper;
-
     private Location locationModel;
     private LocationEntity locationEntity;
     private HotelEntity hotelEntity;
@@ -64,16 +57,14 @@ class HotelMapperTest {
     @Test
     @DisplayName("Service should return correct Location object")
     void mapEntityToModel() {
-        when(locationMapper.toModel(locationEntity)).thenReturn(locationModel);
-        Hotel mappedModel = mapper.toModel(hotelEntity);
+        Hotel mappedModel = HotelMapper.toModel(hotelEntity);
         assertModelEqualsEntity(mappedModel, hotelEntity);
     }
 
     @Test
     @DisplayName("Service should return correct LocationEntity object")
     void mapModelToEntity() {
-        when(locationMapper.toEntity(locationModel)).thenReturn(locationEntity);
-        HotelEntity mappedEntity = mapper.toEntity(hotelModel);
+        HotelEntity mappedEntity = HotelMapper.toEntity(hotelModel);
         assertModelEqualsEntity(hotelModel, mappedEntity);
     }
 
@@ -81,8 +72,7 @@ class HotelMapperTest {
     @DisplayName("Service should return correct LocationEntity object")
     void mapEntityListToModelList() {
         List<HotelEntity> entityList = List.of(hotelEntity);
-        when(locationMapper.toModel(locationEntity)).thenReturn(locationModel);
-        List<Hotel> modelList = mapper.toModels(entityList);
+        List<Hotel> modelList = HotelMapper.toModels(entityList);
         assertModelEqualsEntity(modelList.get(0), entityList.get(0));
     }
 
