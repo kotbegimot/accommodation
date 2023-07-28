@@ -2,8 +2,8 @@ package com.example.accommodation.service;
 
 import com.example.accommodation.entity.HotelEntity;
 import com.example.accommodation.entity.LocationEntity;
-import com.example.accommodation.mapper.HotelMapper;
-import com.example.accommodation.mapper.LocationMapper;
+import com.example.accommodation.util.HotelMapper;
+import com.example.accommodation.util.LocationMapper;
 import com.example.accommodation.model.Hotel;
 import com.example.accommodation.model.Location;
 import com.example.accommodation.model.exceptions.AvailabilityIsZeroException;
@@ -23,18 +23,13 @@ import java.util.List;
 public class HotelsService {
     private final HotelRepository hotelRepository;
     private final LocationRepository locationRepository;
-    private final HotelMapper hotelMapper;
-    private final LocationMapper locationMapper;
     private final HotelValidationService validationService;
     private final HotelConversionService conversionService;
     private HotelEntity checkHotelEntityById(int id) throws NoSuchHotelFoundException {
-        System.out.println("!!!!!!!! checkHotelEntityById !!!!!!!!!!");
         HotelEntity entity = hotelRepository.getHotelById(id);
         if (entity == null) {
-            System.out.println("!!!!!!!! checkHotelEntityById  null!!!!!!!!!!");
             throw new NoSuchHotelFoundException(id);
         }
-        System.out.println("!!!!!!!! checkHotelEntityById  return!!!!!!!!!!");
         return entity;
     }
 
@@ -43,7 +38,7 @@ public class HotelsService {
         if (model.getAddress() != null) {
             List<LocationEntity> locations = locationRepository.getLocationsByAddress(model.getAddress());
                for (LocationEntity location : locations) {
-                if (model.equals(locationMapper.toModel(location))) {
+                if (model.equals(LocationMapper.toModel(location))) {
                     entity = location;
                     break;
                 }
@@ -70,7 +65,7 @@ public class HotelsService {
 
     private LocationEntity createLocationEntity(Location model) {
         model.setId(0);
-        locationRepository.createLocation(locationMapper.toEntity(model));
+        locationRepository.createLocation(LocationMapper.toEntity(model));
         return findLocationEntity(model);
     }
 
@@ -85,19 +80,18 @@ public class HotelsService {
     }
 
     public List<Hotel> getAllHotels() {
-        return hotelMapper.toModels(hotelRepository.getAllHotels());
+        return HotelMapper.toModels(hotelRepository.getAllHotels());
     }
 
     public Hotel getHotel(int id) {
-        System.out.println("!!!!!!!! getHotel !!!!!!!!!!");
         HotelEntity entity = checkHotelEntityById(id);
-        return hotelMapper.toModel(entity);
+        return HotelMapper.toModel(entity);
     }
 
     public void createHotel(Hotel newHotel) {
         validationService.validate(newHotel);
         newHotel = conversionService.convert(newHotel);
-        HotelEntity entity = hotelMapper.toEntity(newHotel);
+        HotelEntity entity = HotelMapper.toEntity(newHotel);
         entity.setLocationEntity(getLocationEntity(newHotel.getLocation()));
         hotelRepository.createHotel(entity);
     }
@@ -110,9 +104,9 @@ public class HotelsService {
         checkHotelEntityById(updateHotel.getId());
         validationService.validate(updateHotel);
         updateHotel = conversionService.convert(updateHotel);
-        HotelEntity entity = hotelMapper.toEntity(updateHotel);
+        HotelEntity entity = HotelMapper.toEntity(updateHotel);
         entity.setLocationEntity(getLocationEntity(updateHotel.getLocation()));
-        return hotelMapper.toModel(hotelRepository.updateHotel(entity));
+        return HotelMapper.toModel(hotelRepository.updateHotel(entity));
     }
 
     public Hotel bookHotel(int id) throws AvailabilityIsZeroException {
@@ -121,7 +115,7 @@ public class HotelsService {
             throw new AvailabilityIsZeroException(id);
         }
         entity.setAvailability(entity.getAvailability() - 1);
-        return hotelMapper.toModel(hotelRepository.updateHotel(entity));
+        return HotelMapper.toModel(hotelRepository.updateHotel(entity));
     }
 
     public void deleteHotel(int id) {
@@ -129,14 +123,14 @@ public class HotelsService {
         hotelRepository.deleteHotel(id);
     }
     public List<Hotel> getHotelsByRating(int rating) {
-        return hotelMapper.toModels(hotelRepository.getHotelsByRating(rating));
+        return HotelMapper.toModels(hotelRepository.getHotelsByRating(rating));
     }
 
     public List<Hotel> getHotelsByLocation(String location) {
-        return hotelMapper.toModels(hotelRepository.getHotelsByLocation(location));
+        return HotelMapper.toModels(hotelRepository.getHotelsByLocation(location));
     }
 
     public List<Hotel> getHotelsByBadge(String reputationBadge) {
-        return hotelMapper.toModels(hotelRepository.getHotelsByBadge(reputationBadge));
+        return HotelMapper.toModels(hotelRepository.getHotelsByBadge(reputationBadge));
     }
 }

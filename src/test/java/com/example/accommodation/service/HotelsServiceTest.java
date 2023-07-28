@@ -2,8 +2,8 @@ package com.example.accommodation.service;
 
 import com.example.accommodation.entity.HotelEntity;
 import com.example.accommodation.entity.LocationEntity;
-import com.example.accommodation.mapper.HotelMapper;
-import com.example.accommodation.mapper.LocationMapper;
+import com.example.accommodation.util.HotelMapper;
+import com.example.accommodation.util.LocationMapper;
 import com.example.accommodation.model.Hotel;
 import com.example.accommodation.model.Location;
 import com.example.accommodation.model.exceptions.AvailabilityIsZeroException;

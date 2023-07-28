@@ -2,6 +2,7 @@ package com.example.accommodation.mapper;
 
 import com.example.accommodation.entity.LocationEntity;
 import com.example.accommodation.model.Location;
+import com.example.accommodation.util.LocationMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

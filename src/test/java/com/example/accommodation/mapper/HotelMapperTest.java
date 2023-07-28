@@ -4,6 +4,8 @@ import com.example.accommodation.entity.HotelEntity;
 import com.example.accommodation.entity.LocationEntity;
 import com.example.accommodation.model.Hotel;
 import com.example.accommodation.model.Location;
+import com.example.accommodation.util.HotelMapper;
+import com.example.accommodation.util.LocationMapper;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
