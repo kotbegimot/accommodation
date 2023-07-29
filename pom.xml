@@ -15,6 +15,21 @@
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>17</java.version>
+		<!-- Sonar Properties -->
+		<sonar.login>admin</sonar.login>
+		<sonar.password>BGcZqji6*Wt2UVB</sonar.password>
+		<sonar.host.url>http://localhost:9000</sonar.host.url>
+		<sonar.version>3.9.1.2184</sonar.version>
+		<sonar.projectKey>accmd</sonar.projectKey>
+		<sonar.projectName>accmd_manager</sonar.projectName>
+		<sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
+		<!-- JaCoCo Properties -->
+		<jacoco.version>0.8.10</jacoco.version>
+		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+		<sonar.language>java</sonar.language>
+		<sonar.exclusions>**/pom.xml</sonar.exclusions>
+		<sonar.coverage.jacoco.xmlReportPaths>target/jacoco-report/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -101,10 +116,23 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- Jacoco -->
+		<dependency>
+			<groupId>org.jacoco</groupId>
+			<artifactId>jacoco-maven-plugin</artifactId>
+			<version>${jacoco.version}</version>
+		</dependency>
+		<!-- Sonar -->
+		<dependency>
+			<groupId>org.sonarsource.scanner.maven</groupId>
+			<artifactId>sonar-maven-plugin</artifactId>
+			<version>${sonar.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
+			<!--Lombok plugin -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -117,24 +145,43 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<!--Jacoco plugin -->
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.10</version>
+				<version>${jacoco.version}</version>
+				<configuration>
+					<output>file</output>
+					<append>true</append>
+				</configuration>
 				<executions>
 					<execution>
+						<id>jacoco-initialize</id>
 						<goals>
 							<goal>prepare-agent</goal>
 						</goals>
 					</execution>
 					<execution>
-						<id>report</id>
-						<phase>prepare-package</phase>
+						<id>jacoco-site</id>
+						<phase>test</phase>
 						<goals>
 							<goal>report</goal>
 						</goals>
+						<configuration>
+							<formats>
+								<format>XML</format>
+							</formats>
+							<dataFile>target/jacoco.exec</dataFile>
+							<outputDirectory>target/jacoco-report</outputDirectory>
+						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<!--Sonarqube plugin -->
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>${sonar.version}</version>
 			</plugin>
 		</plugins>
 	</build>
