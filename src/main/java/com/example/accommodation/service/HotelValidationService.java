@@ -24,7 +24,7 @@ import java.net.URL;
 @Service
 @RequiredArgsConstructor
 public class HotelValidationService {
-    private final static Logger logger = LoggerFactory.getLogger(HotelValidationService.class);
+    private static final  Logger logger = LoggerFactory.getLogger(HotelValidationService.class);
     private final ValidationProperties properties;
     private String errorMessage = "";
 

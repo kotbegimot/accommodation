@@ -2,14 +2,15 @@ package com.example.accommodation.util;
 
 import com.example.accommodation.entity.LocationEntity;
 import com.example.accommodation.model.Location;
-import org.springframework.stereotype.Component;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 
 /**
  * Class used to convert objects from Location Entity to Location Model and back.
  */
-@Component
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LocationMapper {
     public static Location toModel(LocationEntity entity) {
         if (entity == null) {

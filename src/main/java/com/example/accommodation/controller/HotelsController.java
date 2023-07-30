@@ -52,7 +52,7 @@ public class HotelsController {
      * @return OK status with communication options for the target resource
      */
     @RequestMapping(value="", method = RequestMethod.OPTIONS)
-    ResponseEntity<?> collectionOptions()
+    ResponseEntity<String> collectionOptions()
     {
         return ResponseEntity
                 .ok()
@@ -76,7 +76,7 @@ public class HotelsController {
      * @return OK status with communication options for the target resource
      */
     @RequestMapping(value="/{id}", method = RequestMethod.OPTIONS)
-    ResponseEntity<?> singleRequestOptions()
+    ResponseEntity<String> singleRequestOptions()
     {
         return ResponseEntity
                 .ok()
@@ -130,7 +130,7 @@ public class HotelsController {
      * @return OK status with communication options for the target resource
      */
     @RequestMapping(value="/book/{id}", method = RequestMethod.OPTIONS)
-    ResponseEntity<?> bookingOptions()
+    ResponseEntity<String> bookingOptions()
     {
         return ResponseEntity
                 .ok()

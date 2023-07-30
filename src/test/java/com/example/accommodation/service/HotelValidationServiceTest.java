@@ -14,10 +14,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 class HotelValidationServiceTest {
     private final ValidationProperties properties = mock(ValidationProperties.class);
     private HotelValidationService service;
     private Hotel hotel;
+
     @BeforeEach
     public void setup() {
         service = new HotelValidationService(properties);
@@ -38,86 +40,72 @@ class HotelValidationServiceTest {
     @Test
     @DisplayName("Service should throw the Invalid Request exception")
     void hotelNameIsShortTest() {
-        Assertions.assertThrows(InvalidRequestException.class, () -> {
-            when(properties.getNameSymbolsMin()).thenReturn(10);
-            when(properties.getErrorMsgNameIsShort()).thenReturn("Hotel name is too short");
-            service.validate(hotel);
-            assertEquals(service.getErrorMessage(), properties.getErrorMsgNameIsShort());
-        });
+        when(properties.getNameSymbolsMin()).thenReturn(10);
+        when(properties.getErrorMsgNameIsShort()).thenReturn("Hotel name is too short");
+        Assertions.assertThrows(InvalidRequestException.class, () -> service.validate(hotel));
+        assertEquals(properties.getErrorMsgNameIsShort(), service.getErrorMessage());
     }
 
     @Test
     @DisplayName("Service should throw the Invalid Request exception")
     void hotelNameContainsRestrictedWordsTest() {
-        Assertions.assertThrows(InvalidRequestException.class, () -> {
-            when(properties.getNameBlackList()).thenReturn(List.of("name","free"));
-            when(properties.getErrorMsgNameContainsRestrictedWords()).thenReturn("Hotel name contains restricted words");
-            service.validate(hotel);
-            assertEquals(service.getErrorMessage(), properties.getErrorMsgNameContainsRestrictedWords());
-        });
+        when(properties.getNameBlackList()).thenReturn(List.of("name", "free"));
+        when(properties.getErrorMsgNameContainsRestrictedWords()).thenReturn("Hotel name contains restricted words");
+        Assertions.assertThrows(InvalidRequestException.class, () -> service.validate(hotel));
+        assertEquals(properties.getErrorMsgNameContainsRestrictedWords(), service.getErrorMessage());
     }
 
     @Test
     @DisplayName("Service should throw the Invalid Request exception")
     void hotelInvalidRatingTest() {
-        Assertions.assertThrows(InvalidRequestException.class, () -> {
-            hotel.setRating(-1);
-            when(properties.getRatingMin()).thenReturn(0);
-            when(properties.getRatingMin()).thenReturn(5);
-            when(properties.getErrorInvalidRating()).thenReturn("Hotel name contains restricted words");
-            service.validate(hotel);
-            assertEquals(service.getErrorMessage(), properties.getErrorInvalidRating());
-        });
+        hotel.setRating(-1);
+        when(properties.getRatingMin()).thenReturn(0);
+        when(properties.getRatingMin()).thenReturn(5);
+        when(properties.getErrorInvalidRating()).thenReturn("Hotel name contains restricted words");
+        Assertions.assertThrows(InvalidRequestException.class, () -> service.validate(hotel));
+        assertEquals(properties.getErrorInvalidRating(), service.getErrorMessage());
     }
 
     @Test
     @DisplayName("Service should throw the Invalid Request exception")
     void hotelInvalidCategoryTest() {
-        Assertions.assertThrows(InvalidRequestException.class, () -> {
-            when(properties.getCategoryWhiteList()).thenReturn(List.of("hotel", "alternative", "hostel", "lodge"));
-            when(properties.getErrorInvalidCategory()).thenReturn("Hotel category is invalid");
-            service.validate(hotel);
-            assertEquals(service.getErrorMessage(), properties.getErrorInvalidCategory());
-        });
+        when(properties.getCategoryWhiteList()).thenReturn(List.of("hotel", "alternative", "hostel", "lodge"));
+        when(properties.getErrorInvalidCategory()).thenReturn("Hotel category is invalid");
+        Assertions.assertThrows(InvalidRequestException.class, () -> service.validate(hotel));
+        assertEquals(properties.getErrorInvalidCategory(), service.getErrorMessage());
     }
 
     @Test
     @DisplayName("Service should throw the Invalid Request exception")
     void hotelInvalidImageUrlTest() {
-        Assertions.assertThrows(InvalidRequestException.class, () -> {
-            when(properties.getErrorImageUrl()).thenReturn("Hotel image url is invalid");
-            service.validate(hotel);
-            assertEquals(service.getErrorMessage(), properties.getErrorImageUrl());
-        });
+        when(properties.getErrorImageUrl()).thenReturn("Hotel image url is invalid");
+        Assertions.assertThrows(InvalidRequestException.class, () -> service.validate(hotel));
+        assertEquals(properties.getErrorImageUrl(), service.getErrorMessage());
     }
 
     @Test
     @DisplayName("Service should throw the Invalid Request exception")
     void hotelInvalidLocationZipCodeTest() {
-        Assertions.assertThrows(InvalidRequestException.class, () -> {
-            when(properties.getZipCodeLength()).thenReturn(5);
-            when(properties.getErrorLocationZipCode()).thenReturn("Hotel zip code is invalid");
-            service.validate(hotel);
-            assertEquals(service.getErrorMessage(), properties.getErrorLocationZipCode());
-        });
+        when(properties.getZipCodeLength()).thenReturn(5);
+        when(properties.getErrorLocationZipCode()).thenReturn("Hotel zip code is invalid");
+        Assertions.assertThrows(InvalidRequestException.class, () -> service.validate(hotel));
+        assertEquals(properties.getErrorLocationZipCode(), service.getErrorMessage());
     }
 
     @Test
     @DisplayName("Service should throw the Invalid Request exception")
     void hotelInvalidReputationTest() {
-        Assertions.assertThrows(InvalidRequestException.class, () -> {
-            hotel.setReputation(1200);
-            when(properties.getReputationMin()).thenReturn(0);
-            when(properties.getReputationMax()).thenReturn(1000);
-            when(properties.getErrorReputation()).thenReturn("Hotel reputation is invalid");
-            service.validate(hotel);
-            assertEquals(service.getErrorMessage(), properties.getErrorReputation());
-        });
+        hotel.setReputation(1200);
+        when(properties.getReputationMin()).thenReturn(0);
+        when(properties.getReputationMax()).thenReturn(1000);
+        when(properties.getErrorReputation()).thenReturn("Hotel reputation is invalid");
+        Assertions.assertThrows(InvalidRequestException.class, () -> service.validate(hotel));
+        assertEquals(properties.getErrorReputation(), service.getErrorMessage());
     }
 
     @Test
     @DisplayName("Service should return correct error string")
     void getErrorMessageTest() {
-        assertEquals(service.getErrorMessage(), "");
+        assertEquals("", service.getErrorMessage());
     }
 }

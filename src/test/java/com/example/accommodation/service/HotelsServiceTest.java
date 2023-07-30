@@ -35,8 +35,9 @@ class HotelsServiceTest {
     private Hotel hotel;
     private List<HotelEntity> entityList;
     private List<Hotel> modelList;
+
     @BeforeEach
-    public void setup() {
+    void setup() {
         service = new HotelsService(hotelRepository, locationRepository, validationService, conversionService);
         entity = HotelEntity.builder()
                 .id(0)
@@ -71,20 +72,19 @@ class HotelsServiceTest {
     void getAllHotelsTest() {
         when(hotelRepository.getAllHotels()).thenReturn(entityList);
 
-        assertEquals(service.getAllHotels(), modelList);
+        assertEquals(modelList, service.getAllHotels());
         verify(hotelRepository, times(1)).getAllHotels();
     }
+
     @Test
     @DisplayName("Service should throw the NoSuchHotelFoundException exception")
     void getUnexistingHotelTest() {
-        Assertions.assertThrows(NoSuchHotelFoundException.class, () -> {
-            int id = 1;
-            when(hotelRepository.getHotelById(id)).thenReturn(null);
+        int id = 1;
+        when(hotelRepository.getHotelById(id)).thenReturn(null);
 
-            service.getHotel(id);
+        Assertions.assertThrows(NoSuchHotelFoundException.class, () -> service.getHotel(id));
 
-            verify(hotelRepository, times(1)).getHotelById(id);
-        });
+        verify(hotelRepository, times(1)).getHotelById(id);
     }
 
     @Test
@@ -95,19 +95,18 @@ class HotelsServiceTest {
         hotel.setId(id);
         when(hotelRepository.getHotelById(id)).thenReturn(entity);
 
-        assertEquals(service.getHotel(id), hotel);
+        assertEquals(hotel, service.getHotel(id));
         verify(hotelRepository, times(1)).getHotelById(id);
     }
+
     @Test
     @DisplayName("Service should throw the InvalidRequestException exception")
     void createHotelValidationFailedTest() {
-        Assertions.assertThrows(InvalidRequestException.class, () -> {
-            doThrow(InvalidRequestException.class).when(validationService).validate(hotel);
+        doThrow(InvalidRequestException.class).when(validationService).validate(hotel);
 
-            service.createHotel(hotel);
+        Assertions.assertThrows(InvalidRequestException.class, () -> service.createHotel(hotel));
 
-            verify(validationService, times(1)).validate(hotel);
-        });
+        verify(validationService, times(1)).validate(hotel);
     }
 
     @Test
@@ -165,14 +164,12 @@ class HotelsServiceTest {
     @Test
     @DisplayName("Service should throw the NoSuchHotelFoundException exception")
     void updateUnexistingHotelTest() {
-        Assertions.assertThrows(NoSuchHotelFoundException.class, () -> {
-            hotel.setId(1);
-            when(hotelRepository.getHotelById(hotel.getId())).thenReturn(null);
+        hotel.setId(1);
+        when(hotelRepository.getHotelById(hotel.getId())).thenReturn(null);
 
-            service.updateHotel(hotel);
+        Assertions.assertThrows(NoSuchHotelFoundException.class, () -> service.updateHotel(hotel));
 
-            verify(hotelRepository, times(1)).getHotelById(hotel.getId());
-        });
+        verify(hotelRepository, times(1)).getHotelById(hotel.getId());
     }
 
     @Test
@@ -197,16 +194,14 @@ class HotelsServiceTest {
     @Test
     @DisplayName("Service should throw the AvailabilityIsZeroException exception")
     void bookFullBookedHotelTest() {
-        Assertions.assertThrows(AvailabilityIsZeroException.class, () -> {
-            int id = 1;
-            entity.setId(id);
-            entity.setAvailability(0);
-            when(hotelRepository.getHotelById(id)).thenReturn(entity);
+        int id = 1;
+        entity.setId(id);
+        entity.setAvailability(0);
+        when(hotelRepository.getHotelById(id)).thenReturn(entity);
 
-            service.bookHotel(id);
+        Assertions.assertThrows(AvailabilityIsZeroException.class, () -> service.bookHotel(id));
 
-            verify(hotelRepository, times(1)).getHotelById(id);
-        });
+        verify(hotelRepository, times(1)).getHotelById(id);
     }
 
     @Test
@@ -219,7 +214,7 @@ class HotelsServiceTest {
         when(hotelRepository.updateHotel(entity)).thenReturn(entity);
         service.bookHotel(id);
 
-        assertEquals(entity.getAvailability(), 0);
+        assertEquals(0, entity.getAvailability());
         verify(hotelRepository, times(1)).getHotelById(id);
         verify(hotelRepository, times(1)).updateHotel(entity);
     }
@@ -242,7 +237,7 @@ class HotelsServiceTest {
         int rating = 0;
         when(hotelRepository.getHotelsByRating(rating)).thenReturn(entityList);
 
-        assertEquals(service.getHotelsByRating(rating), modelList);
+        assertEquals(modelList, service.getHotelsByRating(rating));
         verify(hotelRepository, times(1)).getHotelsByRating(rating);
     }
 
@@ -252,7 +247,7 @@ class HotelsServiceTest {
         String location = "city";
         when(hotelRepository.getHotelsByLocation(location)).thenReturn(entityList);
 
-        assertEquals(service.getHotelsByLocation(location), modelList);
+        assertEquals(modelList, service.getHotelsByLocation(location));
         verify(hotelRepository, times(1)).getHotelsByLocation(location);
     }
 
@@ -262,7 +257,7 @@ class HotelsServiceTest {
         String reputationBadge = "red";
         when(hotelRepository.getHotelsByBadge(reputationBadge)).thenReturn(entityList);
 
-        assertEquals(service.getHotelsByBadge(reputationBadge), modelList);
+        assertEquals(modelList, service.getHotelsByBadge(reputationBadge));
         verify(hotelRepository, times(1)).getHotelsByBadge(reputationBadge);
     }
 

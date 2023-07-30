@@ -19,7 +19,7 @@ class HotelMapperTest {
     private Hotel hotelModel;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         Location locationModel = new Location(2, "city", "state",
                 "country", 480011, "address");
         LocationEntity locationEntity = new LocationEntity(2, "city", "state",

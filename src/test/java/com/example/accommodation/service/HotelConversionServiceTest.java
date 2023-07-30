@@ -18,7 +18,7 @@ class HotelConversionServiceTest {
     private HotelConversionService service;
     private Hotel hotel;
     @BeforeEach
-    public void setup() {
+     void setup() {
         service = new HotelConversionService(properties);
         hotel = Hotel.builder()
                 .id(0)
@@ -41,7 +41,7 @@ class HotelConversionServiceTest {
         when(properties.getReputationRedThreshold()).thenReturn(500);
         when(properties.getReputationRedBadge()).thenReturn("red");
         hotel = service.convert(hotel);
-        assertEquals(hotel.getReputationBadge(), properties.getReputationRedBadge());
+        assertEquals(properties.getReputationRedBadge(), hotel.getReputationBadge());
     }
 
     @Test
@@ -51,7 +51,7 @@ class HotelConversionServiceTest {
         when(properties.getReputationYellowThreshold()).thenReturn(799);
         when(properties.getReputationYellowBadge()).thenReturn("yellow");
         hotel = service.convert(hotel);
-        assertEquals(hotel.getReputationBadge(), properties.getReputationYellowBadge());
+        assertEquals(properties.getReputationYellowBadge(), hotel.getReputationBadge());
     }
 
     @Test
@@ -62,6 +62,6 @@ class HotelConversionServiceTest {
         when(properties.getReputationYellowThreshold()).thenReturn(799);
         when(properties.getReputationGreenBadge()).thenReturn("green");
         hotel = service.convert(hotel);
-        assertEquals(hotel.getReputationBadge(), properties.getReputationGreenBadge());
+        assertEquals(properties.getReputationGreenBadge(), hotel.getReputationBadge());
     }
 }

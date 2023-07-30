@@ -11,8 +11,8 @@
 	<groupId>com.example</groupId>
 	<artifactId>accommodation</artifactId>
 	<version>1.0.0</version>
-	<name>demo</name>
-	<description>Demo project for Spring Boot</description>
+	<name>accommodation</name>
+	<description>This application is a middleware that exposes accommodation DB via endpoints</description>
 	<properties>
 		<java.version>17</java.version>
 		<!-- Sonar Properties -->

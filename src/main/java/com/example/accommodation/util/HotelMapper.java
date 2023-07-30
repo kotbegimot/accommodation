@@ -2,12 +2,15 @@ package com.example.accommodation.util;
 
 import com.example.accommodation.entity.HotelEntity;
 import com.example.accommodation.model.Hotel;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 /**
  * Class used to convert objects from Hotel Entity to Hotel Model and back.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HotelMapper {
     public static Hotel toModel(HotelEntity entity) {
         return Hotel.builder()

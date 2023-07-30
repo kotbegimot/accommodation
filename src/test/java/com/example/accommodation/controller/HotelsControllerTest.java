@@ -38,12 +38,10 @@ class HotelsControllerTest {
     private MockMvc mvc;
     @MockBean
     private HotelsService service;
-
     private List<Hotel> hotels;
-
     private Hotel hotelRequest;
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         Location location = new Location(1, "city", "state",
                 "country", 480011, "address");
         hotels = new ArrayList<>();
@@ -58,14 +56,14 @@ class HotelsControllerTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         hotels.clear();
     }
 
     @Test
     @DisplayName("Should fetch all hotels")
     @WithMockUser
-    public void getAllHotelsTest() throws Exception {
+    void getAllHotelsTest() throws Exception {
         when(service.getAllHotels()).thenReturn(hotels);
         mvc.perform(get(BASE_URL)
                         .accept(MediaType.APPLICATION_JSON))
@@ -81,7 +79,7 @@ class HotelsControllerTest {
     @Test
     @DisplayName("Should fetch the requested hotel by id")
     @WithMockUser
-    public void getHotelByIdTest() throws Exception {
+    void getHotelByIdTest() throws Exception {
         int id = 2;
         when(service.getHotel(id)).thenReturn(hotels.get(id-1));
         mvc.perform(get(BASE_URL + "/%d".formatted(id))
@@ -98,7 +96,7 @@ class HotelsControllerTest {
     @Test
     @DisplayName("Should call hotel creation")
     @WithMockUser
-    public void createHotelTest() throws Exception {
+    void createHotelTest() throws Exception {
         doNothing().when(service).createHotel(hotelRequest);
         mvc.perform(post(BASE_URL)
                         .content(toJsonString(hotelRequest))
@@ -114,7 +112,7 @@ class HotelsControllerTest {
     @Test
     @DisplayName("Should call hotel updating and return 200")
     @WithMockUser
-    public void updateHotelTest() throws Exception {
+    void updateHotelTest() throws Exception {
         int id = 4;
         hotelRequest.setId(id);
         when(service.isLocationExist(hotelRequest.getLocation())).thenReturn(true);
@@ -137,7 +135,7 @@ class HotelsControllerTest {
     @Test
     @DisplayName("Should call hotel updating and return 201")
     @WithMockUser
-    public void updateHotelWithReplaceTest() throws Exception {
+    void updateHotelWithReplaceTest() throws Exception {
         int id = 4;
         hotelRequest.setId(id);
         when(service.isLocationExist(hotelRequest.getLocation())).thenReturn(false);
@@ -160,7 +158,7 @@ class HotelsControllerTest {
     @Test
     @DisplayName("Should call hotel booking")
     @WithMockUser
-    public void bookHotelTest() throws Exception {
+    void bookHotelTest() throws Exception {
         int id = 4;
         hotelRequest.setId(id);
         Hotel bookedHotel = hotelRequest.toBuilder().availability(hotelRequest.getAvailability()-1).build();
@@ -181,7 +179,7 @@ class HotelsControllerTest {
     @Test
     @DisplayName("Should call hotel deleting")
     @WithMockUser
-    public void deleteHotelTest() throws Exception {
+    void deleteHotelTest() throws Exception {
         int id = 1;
         doNothing().when(service).deleteHotel(id);
         mvc.perform(delete(BASE_URL + "/{id}", id))
@@ -194,7 +192,7 @@ class HotelsControllerTest {
     @Test
     @DisplayName("Should return correct options")
     @WithMockUser
-    public void optionsAllHotelsTest() throws Exception {
+    void optionsAllHotelsTest() throws Exception {
         mvc.perform(options(BASE_URL)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -208,7 +206,7 @@ class HotelsControllerTest {
     @Test
     @DisplayName("Should return correct options")
     @WithMockUser
-    public void optionsHotelByIdTest() throws Exception {
+    void optionsHotelByIdTest() throws Exception {
         int id = 2;
         mvc.perform(options(BASE_URL + "/%d".formatted(id))
                         .accept(MediaType.APPLICATION_JSON))
@@ -223,7 +221,7 @@ class HotelsControllerTest {
     @Test
     @DisplayName("Should return correct options")
     @WithMockUser
-    public void optionsHotelBookingTest() throws Exception {
+    void optionsHotelBookingTest() throws Exception {
         int id = 2;
         mvc.perform(options(BASE_URL + "/book/%d".formatted(id))
                         .accept(MediaType.APPLICATION_JSON))
@@ -238,7 +236,7 @@ class HotelsControllerTest {
     @Test
     @DisplayName("Should return 404")
     @WithMockUser
-    public void hotelIdNotFoundTest() throws Exception {
+    void hotelIdNotFoundTest() throws Exception {
         int id = 100;
         when(service.getHotel(id)).thenThrow(NoSuchHotelFoundException.class);
         mvc.perform(get(BASE_URL + "/%d".formatted(id))
@@ -252,7 +250,7 @@ class HotelsControllerTest {
     @Test
     @DisplayName("Should return 405")
     @WithMockUser
-    public void bookingNotAllowedTest() throws Exception {
+    void bookingNotAllowedTest() throws Exception {
         int id = 100;
         when(service.bookHotel(id)).thenThrow(AvailabilityIsZeroException.class);
         mvc.perform(patch(BASE_URL + "/book/%d".formatted(id))
@@ -266,8 +264,7 @@ class HotelsControllerTest {
     @Test
     @DisplayName("Should return 400")
     @WithMockUser
-    public void invalidCreateRequestTest() throws Exception {
-        int id = 100;
+    void invalidCreateRequestTest() throws Exception {
         doThrow(InvalidRequestException.class).when(service).createHotel(hotelRequest);
         mvc.perform(post(BASE_URL)
                         .content(toJsonString(hotelRequest))

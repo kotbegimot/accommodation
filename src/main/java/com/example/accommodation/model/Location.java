@@ -26,28 +26,21 @@ public class Location {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (obj.getClass() != this.getClass()) {
+        if (obj == this) return true;
+        if (!(obj instanceof Location)) {
             return false;
         }
         final Location other = (Location) obj;
-        if (!Objects.equals(this.city, other.city)) {
-            return false;
-        }
-        if (!Objects.equals(this.state, other.state)) {
-            return false;
-        }
-        if (!Objects.equals(this.country, other.country)) {
-            return false;
-        }
-        if (this.zipCode != other.zipCode) {
-            return false;
-        }
-        if (!Objects.equals(this.address, other.address)) {
-            return false;
-        }
-        return true;
+
+        return this.zipCode == other.zipCode &&
+                Objects.equals(this.city, other.city) &&
+                Objects.equals(this.state, other.state) &&
+                Objects.equals(this.country, other.country) &&
+                Objects.equals(this.address, other.address);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, city, state, country, zipCode, address);
     }
 }
