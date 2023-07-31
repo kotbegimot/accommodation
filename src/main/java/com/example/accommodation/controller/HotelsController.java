@@ -35,8 +35,7 @@ public class HotelsController {
     @ResponseBody
     public Catalogue getHotels(@RequestParam(required = false) Integer reputation,
                                @RequestParam(required = false) String location,
-                               @RequestParam(required = false) String reputationBadge)
-    {
+                               @RequestParam(required = false) String reputationBadge) {
         if (reputation != null && reputation > 0) {
             return new Catalogue(service.getHotelsByRating(reputation));
         } else if (location != null && !location.isEmpty()) {
@@ -51,7 +50,7 @@ public class HotelsController {
      * OPTIONS request for collection
      * @return OK status with communication options for the target resource
      */
-    @RequestMapping(value="", method = RequestMethod.OPTIONS)
+    @RequestMapping(method = RequestMethod.OPTIONS)
     ResponseEntity<String> collectionOptions()
     {
         return ResponseEntity
@@ -89,7 +88,7 @@ public class HotelsController {
      * Validates fields of hotel object from request
      * @param newHotel - hotel object
      */
-    @PostMapping("")
+    @PostMapping()
     @ResponseStatus(value = HttpStatus.CREATED)
     public void createHotel (@RequestBody Hotel newHotel) {
         service.createHotel(newHotel);
