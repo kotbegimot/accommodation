@@ -64,7 +64,7 @@ class HotelsControllerTest {
     @DisplayName("Should fetch all hotels")
     @WithMockUser
     void getAllHotelsTest() throws Exception {
-        when(service.getAllHotels()).thenReturn(hotels);
+        when(service.getHotels(null, null, null)).thenReturn(hotels);
         mvc.perform(get(BASE_URL)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())

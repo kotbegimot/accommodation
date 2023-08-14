@@ -4,16 +4,13 @@ import com.example.accommodation.model.Hotel;
 import com.example.accommodation.model.Location;
 import com.example.accommodation.model.exceptions.InvalidRequestException;
 import com.example.accommodation.util.ValidationProperties;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.reset;
 
 class HotelValidationServiceTest {
     private final ValidationProperties properties = mock(ValidationProperties.class);
@@ -107,5 +104,10 @@ class HotelValidationServiceTest {
     @DisplayName("Service should return correct error string")
     void getErrorMessageTest() {
         assertEquals("", service.getErrorMessage());
+    }
+
+    @AfterEach
+    public void tearDown() {
+        reset(properties);
     }
 }

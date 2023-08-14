@@ -9,10 +9,8 @@ import com.example.accommodation.model.exceptions.InvalidRequestException;
 import com.example.accommodation.model.exceptions.NoSuchHotelFoundException;
 import com.example.accommodation.repository.HotelRepository;
 import com.example.accommodation.repository.LocationRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.mockito.ArgumentCaptor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +72,8 @@ class HotelsServiceTest {
 
         assertEquals(modelList, service.getAllHotels());
         verify(hotelRepository, times(1)).getAllHotels();
+        verifyNoMoreInteractions(hotelRepository);
+        verifyNoInteractions(locationRepository);
     }
 
     @Test
@@ -85,6 +85,8 @@ class HotelsServiceTest {
         Assertions.assertThrows(NoSuchHotelFoundException.class, () -> service.getHotel(id));
 
         verify(hotelRepository, times(1)).getHotelById(id);
+        verifyNoMoreInteractions(hotelRepository);
+        verifyNoInteractions(locationRepository);
     }
 
     @Test
@@ -97,6 +99,8 @@ class HotelsServiceTest {
 
         assertEquals(hotel, service.getHotel(id));
         verify(hotelRepository, times(1)).getHotelById(id);
+        verifyNoMoreInteractions(hotelRepository);
+        verifyNoInteractions(locationRepository);
     }
 
     @Test
@@ -107,6 +111,9 @@ class HotelsServiceTest {
         Assertions.assertThrows(InvalidRequestException.class, () -> service.createHotel(hotel));
 
         verify(validationService, times(1)).validate(hotel);
+        verifyNoMoreInteractions(validationService);
+        verifyNoInteractions(hotelRepository);
+        verifyNoInteractions(locationRepository);
     }
 
     @Test
@@ -118,8 +125,14 @@ class HotelsServiceTest {
 
         service.createHotel(hotel);
 
-        verify(hotelRepository, times(1)).createHotel(entity);
+        ArgumentCaptor<HotelEntity> captor = ArgumentCaptor.forClass(HotelEntity.class);
+        verify(hotelRepository, times(1)).createHotel(captor.capture());
+        assertEquals(captor.getValue().getName(), hotel.getName());
+        assertEquals(captor.getValue().getCategory(), hotel.getCategory());
+        assertEquals(captor.getValue().getReputation(), hotel.getReputation());
         verify(locationRepository, times(1)).getLocationById(hotel.getLocation().getId());
+        verifyNoMoreInteractions(hotelRepository);
+        verifyNoMoreInteractions(locationRepository);
     }
 
     @Test
@@ -141,6 +154,8 @@ class HotelsServiceTest {
         verify(locationRepository, times(1)).createLocation(newLocationEntity);
         verify(locationRepository, times(1)).getLocationsByAddress(hotel.getLocation().getAddress());
         verify(hotelRepository, times(1)).createHotel(entity);
+        verifyNoMoreInteractions(hotelRepository);
+        verifyNoMoreInteractions(locationRepository);
     }
 
     @Test
@@ -159,6 +174,8 @@ class HotelsServiceTest {
         verify(locationRepository, times(0)).getLocationById(0);
         verify(locationRepository, times(1)).getLocationsByAddress(hotel.getLocation().getAddress());
         verify(hotelRepository, times(1)).createHotel(entity);
+        verifyNoMoreInteractions(hotelRepository);
+        verifyNoMoreInteractions(locationRepository);
     }
 
     @Test
@@ -170,6 +187,8 @@ class HotelsServiceTest {
         Assertions.assertThrows(NoSuchHotelFoundException.class, () -> service.updateHotel(hotel));
 
         verify(hotelRepository, times(1)).getHotelById(hotel.getId());
+        verifyNoMoreInteractions(hotelRepository);
+        verifyNoInteractions(locationRepository);
     }
 
     @Test
@@ -189,6 +208,8 @@ class HotelsServiceTest {
         verify(hotelRepository, times(1)).updateHotel(entity);
         verify(locationRepository, times(1)).getLocationById(hotel.getLocation().getId());
         verify(conversionService, times(1)).convert(hotel);
+        verifyNoMoreInteractions(hotelRepository);
+        verifyNoMoreInteractions(locationRepository);
     }
 
     @Test
@@ -202,6 +223,8 @@ class HotelsServiceTest {
         Assertions.assertThrows(AvailabilityIsZeroException.class, () -> service.bookHotel(id));
 
         verify(hotelRepository, times(1)).getHotelById(id);
+        verifyNoMoreInteractions(hotelRepository);
+        verifyNoInteractions(locationRepository);
     }
 
     @Test
@@ -217,6 +240,8 @@ class HotelsServiceTest {
         assertEquals(0, entity.getAvailability());
         verify(hotelRepository, times(1)).getHotelById(id);
         verify(hotelRepository, times(1)).updateHotel(entity);
+        verifyNoMoreInteractions(hotelRepository);
+        verifyNoInteractions(locationRepository);
     }
 
     @Test
@@ -229,6 +254,8 @@ class HotelsServiceTest {
 
         verify(hotelRepository, times(1)).deleteHotel(id);
         verify(hotelRepository, times(1)).getHotelById(id);
+        verifyNoMoreInteractions(hotelRepository);
+        verifyNoInteractions(locationRepository);
     }
 
     @Test
@@ -239,6 +266,8 @@ class HotelsServiceTest {
 
         assertEquals(modelList, service.getHotelsByRating(rating));
         verify(hotelRepository, times(1)).getHotelsByRating(rating);
+        verifyNoMoreInteractions(hotelRepository);
+        verifyNoInteractions(locationRepository);
     }
 
     @Test
@@ -249,6 +278,8 @@ class HotelsServiceTest {
 
         assertEquals(modelList, service.getHotelsByLocation(location));
         verify(hotelRepository, times(1)).getHotelsByLocation(location);
+        verifyNoMoreInteractions(hotelRepository);
+        verifyNoInteractions(locationRepository);
     }
 
     @Test
@@ -259,6 +290,8 @@ class HotelsServiceTest {
 
         assertEquals(modelList, service.getHotelsByBadge(reputationBadge));
         verify(hotelRepository, times(1)).getHotelsByBadge(reputationBadge);
+        verifyNoMoreInteractions(hotelRepository);
+        verifyNoInteractions(locationRepository);
     }
 
     @Test
@@ -268,7 +301,15 @@ class HotelsServiceTest {
 
         assertTrue(service.isLocationExist(hotel.getLocation()));
         verify(locationRepository, times(1)).getLocationById(hotel.getLocation().getId());
+        verifyNoMoreInteractions(locationRepository);
+        verifyNoInteractions(hotelRepository);
     }
 
-
+    @AfterEach
+    public void tearDown() {
+        reset(hotelRepository);
+        reset(locationRepository);
+        reset(conversionService);
+        reset(validationService);
+    }
 }

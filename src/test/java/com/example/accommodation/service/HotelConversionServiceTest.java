@@ -3,6 +3,7 @@ package com.example.accommodation.service;
 import com.example.accommodation.model.Hotel;
 import com.example.accommodation.model.Location;
 import com.example.accommodation.util.ValidationProperties;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,15 +11,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+
 @ExtendWith(MockitoExtension.class)
 class HotelConversionServiceTest {
     private final ValidationProperties properties = mock(ValidationProperties.class);
     private HotelConversionService service;
     private Hotel hotel;
     @BeforeEach
-     void setup() {
+    void setup() {
         service = new HotelConversionService(properties);
         hotel = Hotel.builder()
                 .id(0)
@@ -63,5 +64,10 @@ class HotelConversionServiceTest {
         when(properties.getReputationGreenBadge()).thenReturn("green");
         hotel = service.convert(hotel);
         assertEquals(properties.getReputationGreenBadge(), hotel.getReputationBadge());
+    }
+
+    @AfterEach
+    public void tearDown() {
+        reset(properties);
     }
 }

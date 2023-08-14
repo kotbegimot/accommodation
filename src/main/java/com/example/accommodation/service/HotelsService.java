@@ -2,14 +2,14 @@ package com.example.accommodation.service;
 
 import com.example.accommodation.entity.HotelEntity;
 import com.example.accommodation.entity.LocationEntity;
-import com.example.accommodation.util.HotelMapper;
-import com.example.accommodation.util.LocationMapper;
 import com.example.accommodation.model.Hotel;
 import com.example.accommodation.model.Location;
 import com.example.accommodation.model.exceptions.AvailabilityIsZeroException;
 import com.example.accommodation.model.exceptions.NoSuchHotelFoundException;
 import com.example.accommodation.repository.HotelRepository;
 import com.example.accommodation.repository.LocationRepository;
+import com.example.accommodation.util.HotelMapper;
+import com.example.accommodation.util.LocationMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -77,6 +77,17 @@ public class HotelsService {
             locationEntity = createLocationEntity(locationModel);
         }
         return locationEntity;
+    }
+
+    public List<Hotel> getHotels(Integer reputation, String location, String reputationBadge) {
+        if (reputation != null && reputation > 0) {
+            return getHotelsByRating(reputation);
+        } else if (location != null && !location.isEmpty()) {
+            return getHotelsByLocation(location);
+        } else if (reputationBadge != null && !reputationBadge.isEmpty()) {
+            return getHotelsByBadge(reputationBadge);
+        }
+        return getAllHotels();
     }
 
     public List<Hotel> getAllHotels() {
