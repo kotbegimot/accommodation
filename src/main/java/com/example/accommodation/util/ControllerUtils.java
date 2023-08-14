@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
  * Global variables used in the app
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class Globals
-{
-    public static final  String BASE_URL = "/api/v1/hotels";
+public class ControllerUtils {
+    public static final String BASE_URL = "/api/v1/hotels";
+
     public static String toJsonString(final Object obj) throws RuntimeException {
         try {
             return new ObjectMapper().writeValueAsString(obj);

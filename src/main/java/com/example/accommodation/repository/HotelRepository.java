@@ -14,7 +14,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-@CacheConfig(cacheNames={"hotels"})
+@CacheConfig(cacheNames = {"hotels"})
 public class HotelRepository {
     private final EntityManager entityManager;
 
@@ -41,7 +41,7 @@ public class HotelRepository {
     }
 
     @Transactional
-    @CacheEvict(allEntries=true)
+    @CacheEvict(allEntries = true)
     public void deleteHotel(int hotelId) {
         HotelEntity deletingHotel = entityManager.find(HotelEntity.class, hotelId);
         entityManager.remove(deletingHotel);

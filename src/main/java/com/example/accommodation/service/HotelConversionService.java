@@ -12,10 +12,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class HotelConversionService {
     private final ValidationProperties properties;
-    public Hotel convert (Hotel hotel) {
+
+    public Hotel convert(Hotel hotel) {
         hotel.setReputationBadge(calculateReputationBadge(hotel.getReputation()));
         return hotel;
     }
+
     private String calculateReputationBadge(int reputation) {
         String reputationBadge;
         if (reputation <= properties.getReputationRedThreshold()) {

@@ -21,22 +21,22 @@ import java.util.List;
 public class LocationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="location_id")
+    @Column(name = "location_id")
     private int id;
 
-    @Column(name="city")
+    @Column(name = "city")
     private String city;
 
-    @Column(name="state")
+    @Column(name = "state")
     private String state;
 
-    @Column(name="country")
+    @Column(name = "country")
     private String country;
 
-    @Column(name="zip_code")
+    @Column(name = "zip_code")
     private int zipCode;
 
-    @Column(name="address")
+    @Column(name = "address")
     private String address;
 
     @OneToMany(mappedBy = "locationEntity",

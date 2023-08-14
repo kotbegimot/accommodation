@@ -25,6 +25,7 @@ public class HotelsService {
     private final LocationRepository locationRepository;
     private final HotelValidationService validationService;
     private final HotelConversionService conversionService;
+
     private HotelEntity checkHotelEntityById(int id) throws NoSuchHotelFoundException {
         HotelEntity entity = hotelRepository.getHotelById(id);
         if (entity == null) {
@@ -37,7 +38,7 @@ public class HotelsService {
         LocationEntity entity = null;
         if (model.getAddress() != null) {
             List<LocationEntity> locations = locationRepository.getLocationsByAddress(model.getAddress());
-               for (LocationEntity location : locations) {
+            for (LocationEntity location : locations) {
                 if (model.equals(LocationMapper.toModel(location))) {
                     entity = location;
                     break;
@@ -49,9 +50,10 @@ public class HotelsService {
 
     /**
      * Checks location existence in repository
+     *
      * @param model - location from request
      * @return null if location is not found
-     *         LocationEntity object of the found location
+     * LocationEntity object of the found location
      */
     private LocationEntity checkLocationEntityExistence(Location model) {
         LocationEntity entity;
@@ -133,6 +135,7 @@ public class HotelsService {
         checkHotelEntityById(id);
         hotelRepository.deleteHotel(id);
     }
+
     public List<Hotel> getHotelsByRating(int rating) {
         return HotelMapper.toModels(hotelRepository.getHotelsByRating(rating));
     }

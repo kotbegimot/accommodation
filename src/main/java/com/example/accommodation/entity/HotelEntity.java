@@ -16,35 +16,35 @@ import org.hibernate.annotations.CascadeType;
 public class HotelEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="hotel_id")
+    @Column(name = "hotel_id")
     private int id;
 
-    @Column(name="name")
+    @Column(name = "name")
     private String name;
 
-    @Column(name="rating")
+    @Column(name = "rating")
     private int rating;
 
-    @Column(name="category")
+    @Column(name = "category")
     private String category;
 
     @ManyToOne()
     @Cascade(CascadeType.SAVE_UPDATE)
-    @JoinColumn(name="location_id")
+    @JoinColumn(name = "location_id")
     private LocationEntity locationEntity;
 
-    @Column(name="image")
+    @Column(name = "image")
     private String imageUrl;
 
-    @Column(name="reputation")
+    @Column(name = "reputation")
     private int reputation;
 
-    @Column(name="reputation_badge")
+    @Column(name = "reputation_badge")
     private String reputationBadge;
 
-    @Column(name="price")
+    @Column(name = "price")
     private int price;
 
-    @Column(name="availability")
+    @Column(name = "availability")
     private int availability;
 }

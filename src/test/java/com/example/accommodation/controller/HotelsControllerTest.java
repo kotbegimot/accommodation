@@ -22,8 +22,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.accommodation.util.Globals.BASE_URL;
-import static com.example.accommodation.util.Globals.toJsonString;
+import static com.example.accommodation.util.ControllerUtils.BASE_URL;
+import static com.example.accommodation.util.ControllerUtils.toJsonString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.*;
@@ -40,6 +40,7 @@ class HotelsControllerTest {
     private HotelsService service;
     private List<Hotel> hotels;
     private Hotel hotelRequest;
+
     @BeforeEach
     void setUp() {
         Location location = new Location(1, "city", "state",
@@ -81,7 +82,7 @@ class HotelsControllerTest {
     @WithMockUser
     void getHotelByIdTest() throws Exception {
         int id = 2;
-        when(service.getHotel(id)).thenReturn(hotels.get(id-1));
+        when(service.getHotel(id)).thenReturn(hotels.get(id - 1));
         mvc.perform(get(BASE_URL + "/%d".formatted(id))
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -118,9 +119,9 @@ class HotelsControllerTest {
         when(service.isLocationExist(hotelRequest.getLocation())).thenReturn(true);
         when(service.updateHotel(hotelRequest)).thenReturn(hotelRequest);
         mvc.perform(put(BASE_URL + "/%d".formatted(id))
-                    .content(toJsonString(hotelRequest))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .accept(MediaType.APPLICATION_JSON))
+                        .content(toJsonString(hotelRequest))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
@@ -161,7 +162,7 @@ class HotelsControllerTest {
     void bookHotelTest() throws Exception {
         int id = 4;
         hotelRequest.setId(id);
-        Hotel bookedHotel = hotelRequest.toBuilder().availability(hotelRequest.getAvailability()-1).build();
+        Hotel bookedHotel = hotelRequest.toBuilder().availability(hotelRequest.getAvailability() - 1).build();
         when(service.bookHotel(id)).thenReturn(bookedHotel);
         mvc.perform(patch(BASE_URL + "/book/%d".formatted(id)))
                 .andDo(print())
@@ -172,7 +173,7 @@ class HotelsControllerTest {
                 .andExpect(jsonPath("$.name", is(hotelRequest.getName())))
                 .andExpect(jsonPath("$.rating", is(hotelRequest.getRating())))
                 .andExpect(jsonPath("$.reputationBadge", is(hotelRequest.getReputationBadge())))
-                .andExpect(jsonPath("$.availability", is(hotelRequest.getAvailability()-1)));
+                .andExpect(jsonPath("$.availability", is(hotelRequest.getAvailability() - 1)));
         verify(service, times(1)).bookHotel(id);
     }
 

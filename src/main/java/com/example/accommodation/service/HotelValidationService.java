@@ -24,7 +24,7 @@ import java.net.URL;
 @Service
 @RequiredArgsConstructor
 public class HotelValidationService {
-    private static final  Logger logger = LoggerFactory.getLogger(HotelValidationService.class);
+    private static final Logger logger = LoggerFactory.getLogger(HotelValidationService.class);
     private final ValidationProperties properties;
     private String errorMessage = "";
 
@@ -63,6 +63,7 @@ public class HotelValidationService {
         }
         return valid;
     }
+
     private boolean validateRating(Hotel hotel) {
         int rating = hotel.getRating();
         boolean valid = rating >= properties.getRatingMin() && rating <= properties.getRatingMax();
@@ -71,6 +72,7 @@ public class HotelValidationService {
                     .formatted(rating, properties.getRatingMin(), properties.getRatingMax());
         return valid;
     }
+
     private boolean validateCategory(Hotel hotel) {
         String category = hotel.getCategory();
         boolean valid = properties.getCategoryWhiteList().stream().anyMatch(category::contains);
@@ -79,6 +81,7 @@ public class HotelValidationService {
                     .formatted(category, properties.getCategoryWhiteList().toString());
         return valid;
     }
+
     private boolean validateImagePath(Hotel hotel) {
         String url = hotel.getImageUrl();
         boolean retVal = true;
@@ -90,6 +93,7 @@ public class HotelValidationService {
         }
         return retVal;
     }
+
     private boolean validateLocation(Hotel hotel) {
         int zipCode = hotel.getLocation().getZipCode();
         boolean valid = String.valueOf(zipCode).length() == properties.getZipCodeLength();

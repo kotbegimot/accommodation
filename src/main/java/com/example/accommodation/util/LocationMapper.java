@@ -26,6 +26,7 @@ public class LocationMapper {
                     .build();
         }
     }
+
     public static LocationEntity toEntity(Location location) {
         if (location == null) {
             return null;

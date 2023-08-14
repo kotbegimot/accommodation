@@ -31,6 +31,7 @@ public class LocationRepository {
         entityManager.merge(location);
         return location;
     }
+
     @Transactional
     public void deleteLocation(int locationId) {
         LocationEntity deletingLocation = entityManager.find(LocationEntity.class, locationId);

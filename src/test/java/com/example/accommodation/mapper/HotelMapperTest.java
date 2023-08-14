@@ -49,6 +49,7 @@ class HotelMapperTest {
                 .availability(45)
                 .build();
     }
+
     @Test
     @DisplayName("Service should return correct Location object")
     void mapEntityToModel() {
