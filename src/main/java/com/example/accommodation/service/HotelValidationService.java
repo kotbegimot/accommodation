@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Implementation of validation per parameters:
@@ -26,89 +28,73 @@ import java.net.URL;
 public class HotelValidationService {
     private static final Logger logger = LoggerFactory.getLogger(HotelValidationService.class);
     private final ValidationProperties properties;
-    private String errorMessage = "";
+    private final List<String> errors = new ArrayList<>();
 
     void validate(Hotel hotel) throws InvalidRequestException {
-        boolean valid = true;
+        errors.clear();
         for (Method method : this.getClass().getDeclaredMethods()) {
             if (Modifier.isPrivate(method.getModifiers())) {
                 try {
-                    valid = (boolean) method.invoke(this, hotel);
-                    if (!valid)
-                        break;
+                    method.invoke(this, hotel);
                 } catch (Exception e) {
                     logger.error("Validation method invocation error: {}, method: {}", e.getMessage(), method.getName());
                 }
             }
         }
-        if (!valid)
-            throw new InvalidRequestException(errorMessage);
+        if (!errors.isEmpty())
+            throw new InvalidRequestException(errors);
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
+    public List<String> getErrorMessages() {
+        return errors;
     }
 
-    private boolean validateName(Hotel hotel) {
+    private void validateName(Hotel hotel) {
         String name = hotel.getName();
-        boolean valid = false;
         if (name.length() > properties.getNameSymbolsMin()) {
-            valid = properties.getNameBlackList().stream().noneMatch(name::contains);
-            if (!valid)
-                errorMessage = properties.getErrorMsgNameContainsRestrictedWords()
-                        .formatted(name, properties.getNameBlackList().toString());
+            if (properties.getNameBlackList().stream().anyMatch(name::contains))
+                errors.add(properties.getErrorMsgNameContainsRestrictedWords()
+                        .formatted(name, properties.getNameBlackList().toString()));
         } else {
-            errorMessage = properties.getErrorMsgNameIsShort()
-                    .formatted(name, properties.getNameSymbolsMin());
+            errors.add(properties.getErrorMsgNameIsShort()
+                    .formatted(name, properties.getNameSymbolsMin()));
         }
-        return valid;
     }
 
-    private boolean validateRating(Hotel hotel) {
+    private void validateRating(Hotel hotel) {
         int rating = hotel.getRating();
-        boolean valid = rating >= properties.getRatingMin() && rating <= properties.getRatingMax();
-        if (!valid)
-            errorMessage = properties.getErrorInvalidRating()
-                    .formatted(rating, properties.getRatingMin(), properties.getRatingMax());
-        return valid;
+        if (!(rating >= properties.getRatingMin() && rating <= properties.getRatingMax()))
+            errors.add(properties.getErrorInvalidRating()
+                    .formatted(rating, properties.getRatingMin(), properties.getRatingMax()));
     }
 
-    private boolean validateCategory(Hotel hotel) {
+    private void validateCategory(Hotel hotel) {
         String category = hotel.getCategory();
-        boolean valid = properties.getCategoryWhiteList().stream().anyMatch(category::contains);
-        if (!valid)
-            errorMessage = properties.getErrorInvalidCategory()
-                    .formatted(category, properties.getCategoryWhiteList().toString());
-        return valid;
+        if (properties.getCategoryWhiteList().stream().noneMatch(category::contains))
+            errors.add(properties.getErrorInvalidCategory()
+                    .formatted(category, properties.getCategoryWhiteList().toString()));
     }
 
-    private boolean validateImagePath(Hotel hotel) {
+    private void validateImagePath(Hotel hotel) {
         String url = hotel.getImageUrl();
-        boolean retVal = true;
         try {
             new URL(url).toURI();
         } catch (Exception e) {
-            errorMessage = properties.getErrorImageUrl().formatted(url, e.getMessage());
-            retVal = false;
+            errors.add(properties.getErrorImageUrl().formatted(url, e.getMessage()));
         }
-        return retVal;
     }
 
-    private boolean validateLocation(Hotel hotel) {
+    private void validateLocation(Hotel hotel) {
         int zipCode = hotel.getLocation().getZipCode();
-        boolean valid = String.valueOf(zipCode).length() == properties.getZipCodeLength();
-        if (!valid)
-            errorMessage = properties.getErrorLocationZipCode()
-                    .formatted(zipCode, properties.getZipCodeLength());
-        return valid;
+        if (String.valueOf(zipCode).length() != properties.getZipCodeLength())
+            errors.add(properties.getErrorLocationZipCode()
+                    .formatted(zipCode, properties.getZipCodeLength()));
     }
 
-    private boolean validateReputation(Hotel hotel) {
+    private void validateReputation(Hotel hotel) {
         int reputation = hotel.getReputation();
-        boolean valid = reputation >= properties.getReputationMin() && reputation <= properties.getReputationMax();
-        if (!valid)
-            errorMessage = properties.getErrorReputation()
-                    .formatted(reputation, properties.getReputationMin(), properties.getReputationMax());
-        return valid;
+        if (!(reputation >= properties.getReputationMin() && reputation <= properties.getReputationMax()))
+            errors.add(properties.getErrorReputation()
+                    .formatted(reputation, properties.getReputationMin(), properties.getReputationMax()));
     }
 }

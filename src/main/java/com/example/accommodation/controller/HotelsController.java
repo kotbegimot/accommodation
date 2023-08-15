@@ -12,6 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 import static com.example.accommodation.util.ControllerUtils.BASE_URL;
 
 @RestController
@@ -175,9 +178,9 @@ public class HotelsController {
      */
     @ExceptionHandler(InvalidRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleInvalidRequestException(InvalidRequestException exception) {
+    public ResponseEntity<Map<String, List<String>>> handleInvalidRequestException(InvalidRequestException exception) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(exception.getMessage());
+                .body(exception.getErrorsMap());
     }
 }

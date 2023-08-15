@@ -273,7 +273,7 @@ class HotelsControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$").doesNotExist());
+                .andExpect(jsonPath("$", notNullValue()));
         verify(service, times(1)).createHotel(hotelRequest);
     }
 }
