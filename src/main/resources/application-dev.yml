@@ -3,8 +3,8 @@ spring:
     activate:
       on-profile: "dev"
   datasource:
-    #url: "jdbc:h2:mem:testdb"
-    url: "jdbc:h2:file:P:/data/sample;DB_CLOSE_ON_EXIT=FALSE;"
+    #url: "jdbc:h2:mem:accmd_db"
+    url: "jdbc:h2:file:C:/Projects/Java/accmd_data;DB_CLOSE_ON_EXIT=FALSE;"
     driverClassName: "org.h2.Driver"
     username: "sa"
     password: ""
