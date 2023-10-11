@@ -20,7 +20,7 @@
 		<sonar.host.url>http://localhost:9000</sonar.host.url>
 		<sonar.version>3.9.1.2184</sonar.version>
 		<sonar.projectKey>accmd</sonar.projectKey>
-		<sonar.projectName>accmd_manager</sonar.projectName>
+		<sonar.projectName>accommodation</sonar.projectName>
 		<sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
 		<!-- JaCoCo Properties -->
 		<jacoco.version>0.8.10</jacoco.version>

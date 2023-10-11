@@ -11,7 +11,11 @@ import com.example.accommodation.repository.LocationRepository;
 import com.example.accommodation.util.HotelMapper;
 import com.example.accommodation.util.LocationMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -65,6 +69,7 @@ public class HotelsService {
         return entity;
     }
 
+    @Transactional
     private LocationEntity createLocationEntity(Location model) {
         model.setId(0);
         locationRepository.createLocation(LocationMapper.toEntity(model));
@@ -96,11 +101,13 @@ public class HotelsService {
         return HotelMapper.toModels(hotelRepository.getAllHotels());
     }
 
+    @Cacheable()
     public Hotel getHotel(int id) {
         HotelEntity entity = checkHotelEntityById(id);
         return HotelMapper.toModel(entity);
     }
 
+    @Transactional
     public void createHotel(Hotel newHotel) {
         validationService.validate(newHotel);
         newHotel = conversionService.convert(newHotel);
@@ -113,6 +120,8 @@ public class HotelsService {
         return (checkLocationEntityExistence(locationModel) != null);
     }
 
+    @Transactional
+    @CachePut()
     public Hotel updateHotel(Hotel updateHotel) {
         checkHotelEntityById(updateHotel.getId());
         validationService.validate(updateHotel);
@@ -122,6 +131,8 @@ public class HotelsService {
         return HotelMapper.toModel(hotelRepository.updateHotel(entity));
     }
 
+    @Transactional
+    @CachePut()
     public Hotel bookHotel(int id) throws AvailabilityIsZeroException {
         HotelEntity entity = checkHotelEntityById(id);
         if (entity.getAvailability() < 1) {
@@ -131,6 +142,8 @@ public class HotelsService {
         return HotelMapper.toModel(hotelRepository.updateHotel(entity));
     }
 
+    @Transactional
+    @CacheEvict(allEntries = true)
     public void deleteHotel(int id) {
         checkHotelEntityById(id);
         hotelRepository.deleteHotel(id);

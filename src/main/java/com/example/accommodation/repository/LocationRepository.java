@@ -21,7 +21,6 @@ public class LocationRepository {
         return entityManager.find(LocationEntity.class, id);
     }
 
-    @Transactional
     public void createLocation(LocationEntity location) {
         entityManager.persist(location);
     }
