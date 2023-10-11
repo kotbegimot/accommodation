@@ -2,9 +2,6 @@ package com.example.accommodation.controller;
 
 import com.example.accommodation.model.Catalogue;
 import com.example.accommodation.model.Hotel;
-import com.example.accommodation.model.exceptions.AvailabilityIsZeroException;
-import com.example.accommodation.model.exceptions.InvalidRequestException;
-import com.example.accommodation.model.exceptions.NoSuchHotelFoundException;
 import com.example.accommodation.service.HotelsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpMethod;
@@ -12,12 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
-
 import static com.example.accommodation.util.ControllerUtils.BASE_URL;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping(value = BASE_URL)
 @RequiredArgsConstructor
 
@@ -149,38 +144,5 @@ public class HotelsController {
     @ResponseStatus(value = HttpStatus.OK)
     public void deleteHotel(@PathVariable int id) {
         service.deleteHotel(id);
-    }
-
-    /**
-     * Custom exception, returns 404 if the requested hotel does not exist.
-     */
-    @ExceptionHandler(NoSuchHotelFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<String> handleNoSuchHotelFoundException(NoSuchHotelFoundException exception) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(exception.getMessage());
-    }
-
-    /**
-     * Custom exception, returns 405 if when booking a hotel, the availability is 0.
-     */
-    @ExceptionHandler(AvailabilityIsZeroException.class)
-    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-    public ResponseEntity<String> handleAvailabilityIsZeroException(AvailabilityIsZeroException exception) {
-        return ResponseEntity
-                .status(HttpStatus.METHOD_NOT_ALLOWED)
-                .body(exception.getMessage());
-    }
-
-    /**
-     * Custom exception, returns 400 if POST or PUT request body contains invalid values.
-     */
-    @ExceptionHandler(InvalidRequestException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<Map<String, List<String>>> handleInvalidRequestException(InvalidRequestException exception) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(exception.getErrorsMap());
     }
 }
