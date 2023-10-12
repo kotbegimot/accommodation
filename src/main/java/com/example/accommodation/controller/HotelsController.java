@@ -1,6 +1,5 @@
 package com.example.accommodation.controller;
 
-import com.example.accommodation.model.Catalogue;
 import com.example.accommodation.model.Hotel;
 import com.example.accommodation.service.HotelsService;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +7,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.example.accommodation.util.ControllerUtils.BASE_URL;
 
@@ -33,10 +34,10 @@ public class HotelsController {
      */
     @GetMapping()
     @ResponseBody
-    public Catalogue getHotels(@RequestParam(required = false) Integer reputation,
-                               @RequestParam(required = false) String location,
-                               @RequestParam(required = false) String reputationBadge) {
-        return new Catalogue(service.getHotels(reputation, location, reputationBadge));
+    public List<Hotel> getHotels(@RequestParam(required = false) Integer reputation,
+                                 @RequestParam(required = false) String location,
+                                 @RequestParam(required = false) String reputationBadge) {
+        return service.getHotels(reputation, location, reputationBadge);
     }
 
     /**

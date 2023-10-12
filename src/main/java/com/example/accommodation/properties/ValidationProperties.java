@@ -1,4 +1,4 @@
-package com.example.accommodation.util;
+package com.example.accommodation.properties;
 
 
 import lombok.Getter;

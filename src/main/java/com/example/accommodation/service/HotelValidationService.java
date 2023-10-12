@@ -2,7 +2,7 @@ package com.example.accommodation.service;
 
 import com.example.accommodation.model.Hotel;
 import com.example.accommodation.model.exceptions.InvalidRequestException;
-import com.example.accommodation.util.ValidationProperties;
+import com.example.accommodation.properties.ValidationProperties;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

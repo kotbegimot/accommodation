@@ -3,7 +3,7 @@ package com.example.accommodation.service;
 import com.example.accommodation.model.Hotel;
 import com.example.accommodation.model.Location;
 import com.example.accommodation.model.exceptions.InvalidRequestException;
-import com.example.accommodation.util.ValidationProperties;
+import com.example.accommodation.properties.ValidationProperties;
 import org.junit.jupiter.api.*;
 
 import java.util.List;
