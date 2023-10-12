@@ -5,8 +5,6 @@ import com.example.accommodation.model.Location;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-
 /**
  * Class used to convert objects from Location Entity to Location Model and back.
  */
@@ -38,7 +36,6 @@ public class LocationMapper {
                     .country(location.getCountry())
                     .zipCode(location.getZipCode())
                     .address(location.getAddress())
-                    .hotels(new ArrayList<>())
                     .build();
         }
     }

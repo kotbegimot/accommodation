@@ -4,12 +4,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
 @AllArgsConstructor
+@EqualsAndHashCode
 @Builder(toBuilder = true)
 public class Hotel {
     @JsonProperty("id")
+    @EqualsAndHashCode.Exclude
     int id;
     @JsonProperty("name")
     String name;

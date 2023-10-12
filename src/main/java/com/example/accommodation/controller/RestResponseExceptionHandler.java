@@ -1,10 +1,7 @@
 package com.example.accommodation.controller;
 
 import com.example.accommodation.model.ErrorResponseModel;
-import com.example.accommodation.model.exceptions.AvailabilityIsZeroException;
-import com.example.accommodation.model.exceptions.HotelAlreadyExistsException;
-import com.example.accommodation.model.exceptions.InvalidRequestException;
-import com.example.accommodation.model.exceptions.NoSuchHotelFoundException;
+import com.example.accommodation.model.exceptions.*;
 import com.example.accommodation.properties.MainProperties;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -119,6 +116,20 @@ public class RestResponseExceptionHandler {
      */
     @ExceptionHandler(NoSuchHotelFoundException.class)
     public ResponseEntity<ErrorResponseModel> handleNoSuchHotelFoundException(@NonNull NoSuchHotelFoundException exception, @NonNull HttpServletRequest request) {
+        String timeStamp = new SimpleDateFormat().format(new java.util.Date());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(
+                        ErrorResponseModel.builder()
+                                .status(HttpStatus.NOT_FOUND.value())
+                                .error(HttpStatus.NOT_FOUND.getReasonPhrase())
+                                .messages(List.of((exception.getMessage())))
+                                .path(request.getRequestURL().toString())
+                                .timestamp(timeStamp)
+                                .build());
+    }
+
+    @ExceptionHandler(NoSuchLocationlFoundException.class)
+    public ResponseEntity<ErrorResponseModel> handleNoSuchLocationlFoundException(@NonNull NoSuchLocationlFoundException exception, @NonNull HttpServletRequest request) {
         String timeStamp = new SimpleDateFormat().format(new java.util.Date());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(

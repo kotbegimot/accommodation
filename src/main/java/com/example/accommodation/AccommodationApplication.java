@@ -8,7 +8,7 @@ import org.springframework.cache.annotation.EnableCaching;
 
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class })
 @EnableCaching
-@ConfigurationPropertiesScan("com.example.accommodation.util")
+@ConfigurationPropertiesScan("com.example.accommodation.properties")
 public class AccommodationApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AccommodationApplication.class, args);

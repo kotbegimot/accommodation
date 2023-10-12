@@ -7,6 +7,7 @@ import com.example.accommodation.model.Location;
 import com.example.accommodation.model.exceptions.AvailabilityIsZeroException;
 import com.example.accommodation.model.exceptions.HotelAlreadyExistsException;
 import com.example.accommodation.model.exceptions.NoSuchHotelFoundException;
+import com.example.accommodation.model.exceptions.NoSuchLocationlFoundException;
 import com.example.accommodation.repository.HotelRepositoryJPA;
 import com.example.accommodation.repository.LocationRepositoryJPA;
 import com.example.accommodation.util.HotelMapper;
@@ -51,19 +52,13 @@ public class HotelsService {
      */
     private LocationEntity checkLocationEntityExistence(Location model) {
         LocationEntity entity;
-        if (model.getId() != 0) {
-            entity = locationRepositoryJPA.findById(model.getId()).get();
+        int id = model.getId();
+        if (id != 0) {
+            entity = locationRepositoryJPA.findById(model.getId()).orElseThrow(() -> new NoSuchLocationlFoundException(id));
         } else {
             entity = findLocationEntity(model);
         }
         return entity;
-    }
-
-    @Transactional
-    private LocationEntity createLocationEntity(Location model) {
-        model.setId(0);
-        locationRepositoryJPA.save(LocationMapper.toEntity(model));
-        return findLocationEntity(model);
     }
 
     private LocationEntity getLocationEntity(Location locationModel) {
@@ -71,7 +66,8 @@ public class HotelsService {
         LocationEntity locationEntity = checkLocationEntityExistence(locationModel);
         // create location if it doesn't exist
         if (locationEntity == null) {
-            locationEntity = createLocationEntity(locationModel);
+            locationEntity = LocationMapper.toEntity(locationModel);
+            locationEntity.setId(0);
         }
         return locationEntity;
     }
@@ -100,12 +96,11 @@ public class HotelsService {
     public void createHotel(Hotel newHotel) {
         // validation
         validationService.validate(newHotel);
-        String hotelName = newHotel.getName();
-        hotelRepositoryJPA.findByName(hotelName).orElseThrow(() -> new HotelAlreadyExistsException(hotelName));
+        if (hotelRepositoryJPA.findByName(newHotel.getName()).isPresent()) throw new HotelAlreadyExistsException(newHotel.getName());
         // conversion
         newHotel = conversionService.convert(newHotel);
         HotelEntity entity = HotelMapper.toEntity(newHotel);
-        entity.setLocationEntity(getLocationEntity(newHotel.getLocation()));
+        getLocationEntity(newHotel.getLocation()).addHotel(entity);
         // persist
         hotelRepositoryJPA.save(entity);
     }

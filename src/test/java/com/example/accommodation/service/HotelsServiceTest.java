@@ -7,8 +7,8 @@ import com.example.accommodation.model.Location;
 import com.example.accommodation.model.exceptions.AvailabilityIsZeroException;
 import com.example.accommodation.model.exceptions.InvalidRequestException;
 import com.example.accommodation.model.exceptions.NoSuchHotelFoundException;
-import com.example.accommodation.repository.HotelRepository;
-import com.example.accommodation.repository.LocationRepository;
+import com.example.accommodation.repository.HotelRepositoryJPA;
+import com.example.accommodation.repository.LocationRepositoryJPA;
 import org.junit.jupiter.api.*;
 import org.mockito.ArgumentCaptor;
 
@@ -20,9 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 class HotelsServiceTest {
-    private final HotelRepository hotelRepository = mock(HotelRepository.class);
+    private final HotelRepositoryJPA hotelRepository = mock(HotelRepositoryJPA.class);
 
-    private final LocationRepository locationRepository = mock(LocationRepository.class);
+    private final LocationRepositoryJPA locationRepository = mock(LocationRepositoryJPA.class);
 
     private final HotelValidationService validationService = mock(HotelValidationService.class);
 

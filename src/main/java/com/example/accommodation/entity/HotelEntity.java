@@ -2,8 +2,11 @@ package com.example.accommodation.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Getter
 @Setter
@@ -12,39 +15,43 @@ import org.hibernate.annotations.CascadeType;
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "hotels")
 public class HotelEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "hotel_id")
-    private int id;
+    @EqualsAndHashCode.Exclude
+    int id;
 
     @Column(name = "name")
-    private String name;
+    String name;
 
     @Column(name = "rating")
-    private int rating;
+    int rating;
 
     @Column(name = "category")
-    private String category;
+    String category;
 
-    @ManyToOne()
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @Cascade(CascadeType.SAVE_UPDATE)
-    @JoinColumn(name = "location_id")
-    private LocationEntity locationEntity;
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    @JoinColumn(name = "location_id", nullable = false)
+    @EqualsAndHashCode.Exclude
+    LocationEntity locationEntity;
 
     @Column(name = "image")
-    private String imageUrl;
+    String imageUrl;
 
     @Column(name = "reputation")
-    private int reputation;
+    int reputation;
 
     @Column(name = "reputation_badge")
-    private String reputationBadge;
+    String reputationBadge;
 
     @Column(name = "price")
-    private int price;
+    int price;
 
     @Column(name = "availability")
-    private int availability;
+    int availability;
 }

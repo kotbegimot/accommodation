@@ -4,6 +4,10 @@ spring:
     name: accommodation
   profiles:
     active: "dev"
+  jpa:
+    defer-datasource-initialization: true
+    show-sql: true
+    properties.hibernate.format_sql: true
 server:
   port: 8080
   error:
@@ -44,3 +48,5 @@ validation:
   errorImageUrl: Hotel image URL "%s" is invalid, error "%s"
   errorLocationZipCode: Location zip code "%d" must have a length of %d
   errorReputation: Hotel reputation "%d" must be [%d, %d]
+main:
+  exceptionDateFormat: "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
