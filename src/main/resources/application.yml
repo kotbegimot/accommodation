@@ -3,7 +3,7 @@ spring:
   application:
     name: accommodation
   profiles:
-    active: "dev"
+    active: "prod"
   jpa:
     defer-datasource-initialization: true
     show-sql: true
@@ -16,7 +16,8 @@ server:
 # logging
 # OFF << FATAL << ERROR << WARN << INFO << DEBUG << TRACE << ALL
 logging:
-  level.com.example.demo: "DEBUG"
+  level.com.example.accommodation: "DEBUG"
+  level.com.springframework.security: "DEBUG"
 validation:
   nameBlackList:
     - "Free"

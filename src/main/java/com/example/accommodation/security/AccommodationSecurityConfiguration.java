@@ -23,7 +23,7 @@ import static com.example.accommodation.util.ControllerUtils.BASE_URL;
 @EnableWebSecurity
 public class AccommodationSecurityConfiguration {
     @Bean
-    @ConditionalOnProperty(name="security.users.in-memory", havingValue="true")
+    @ConditionalOnProperty(name = "security.users.in-memory", havingValue = "true")
     public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
         // Default passwords here are: test123
         UserDetails devon = User.builder()
@@ -44,25 +44,35 @@ public class AccommodationSecurityConfiguration {
 
         return new InMemoryUserDetailsManager(devon, kirk, nagibator);
     }
+
     @Bean
-    @ConditionalOnProperty(name="security.users.in-memory", havingValue="false")
+    @ConditionalOnProperty(name = "security.users.in-memory", havingValue = "false")
     public UserDetailsManager userDetailsManager(DataSource dataSource) {
-        return new JdbcUserDetailsManager(dataSource);
+        JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
+        // how to find users
+        jdbcUserDetailsManager.setUsersByUsernameQuery(
+                "select user_id, pwd, active from members where user_id=?"
+        );
+        // how to find roles
+        jdbcUserDetailsManager.setAuthoritiesByUsernameQuery(
+                "select user_id, role from roles where user_id=?"
+        );
+        return jdbcUserDetailsManager;
     }
 
     @Bean
     public DefaultSecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(configurer ->
-                        configurer
-                                .requestMatchers(HttpMethod.GET, BASE_URL).hasRole("CUSTOMER")
-                                .requestMatchers(HttpMethod.GET, BASE_URL + "/**").hasRole("CUSTOMER")
-                                .requestMatchers(HttpMethod.POST, BASE_URL).hasRole("MANAGER")
-                                .requestMatchers(HttpMethod.PUT, BASE_URL + "/**").hasRole("MANAGER")
-                                .requestMatchers(HttpMethod.PATCH, BASE_URL + "/book/**").hasRole("MANAGER")
-                                .requestMatchers(HttpMethod.DELETE, BASE_URL + "/**").hasRole("ADMIN")
-                                .requestMatchers("/v2/api-docs/**", "/swagger-ui/**", "/swagger-resources/**",
-                                        "/v2/api-docs/**", "/webjars/**" , "/swagger.json").permitAll()
-                                .anyRequest().authenticated());
+                configurer
+                        .requestMatchers(HttpMethod.GET, BASE_URL).hasRole("CUSTOMER")
+                        .requestMatchers(HttpMethod.GET, BASE_URL + "/**").hasRole("CUSTOMER")
+                        .requestMatchers(HttpMethod.POST, BASE_URL).hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.PUT, BASE_URL + "/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.PATCH, BASE_URL + "/book/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.DELETE, BASE_URL + "/**").hasRole("ADMIN")
+                        .requestMatchers("/v2/api-docs/**", "/swagger-ui/**", "/swagger-resources/**",
+                                "/v2/api-docs/**", "/webjars/**", "/swagger.json").permitAll()
+                        .anyRequest().authenticated());
 
         // use HTTP basic authentication
         http.httpBasic(Customizer.withDefaults());
