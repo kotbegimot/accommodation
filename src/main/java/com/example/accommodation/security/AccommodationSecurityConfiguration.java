@@ -11,34 +11,45 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.DefaultSecurityFilterChain;
+
+import javax.sql.DataSource;
 
 import static com.example.accommodation.util.ControllerUtils.BASE_URL;
 
-@Configuration
+@Configuration()
 @EnableWebSecurity
 public class AccommodationSecurityConfiguration {
     @Bean
     @ConditionalOnProperty(name="security.users.in-memory", havingValue="true")
-    public InMemoryUserDetailsManager userDetailsManager() {
+    public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
+        // Default passwords here are: test123
         UserDetails devon = User.builder()
                 .username("devon")
-                .password("{noop}test123")
+                .password("{bcrypt}$2a$10$goLOWsblvk3LycfYKnwQYejFliUNQkf9KNG8K0mAer0M2VNL3FxHm")
                 .roles("CUSTOMER")
                 .build();
         UserDetails kirk = User.builder()
                 .username("kirk")
-                .password("{noop}test123")
+                .password("{bcrypt}$2a$10$BfxYPKRUgVgkKWOyNNJfk.IJvIq7xnWWUmdYot1fcCHl8Jt65QYP2")
                 .roles("CUSTOMER", "MANAGER")
                 .build();
         UserDetails nagibator = User.builder()
                 .username("nagibator")
-                .password("{noop}test123")
+                .password("{bcrypt}$2a$10$wQ.T2H4YpGCOT4tX8eR0n.x2SNZycFD.tu33Fxwf.3Mhid.WQ2EJO")
                 .roles("CUSTOMER", "MANAGER", "ADMIN")
                 .build();
 
         return new InMemoryUserDetailsManager(devon, kirk, nagibator);
     }
+    @Bean
+    @ConditionalOnProperty(name="security.users.in-memory", havingValue="false")
+    public UserDetailsManager userDetailsManager(DataSource dataSource) {
+        return new JdbcUserDetailsManager(dataSource);
+    }
+
     @Bean
     public DefaultSecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(configurer ->
