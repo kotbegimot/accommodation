@@ -20,3 +20,5 @@ spring:
     console:
       enabled: true
       path: "/h2"
+security:
+  users.in-memory: true
